@@ -6,8 +6,7 @@
 
 **Tech Stack:**
 
-* Frontend: HTML, CSS, JavaScript, Vue.js, Bootstrap
-* Libraries: jsPDF, FileSaver.js, HTML2Canvas
+* Frontend: HTML, CSS, TypeScript, Reactjs
 
 **Features (to be implemented):**
 
@@ -22,23 +21,21 @@
 src/
 ├── assets/
 │   ├── css/
-│   │   └── style.css
+│   │   └── style.css  (or your main stylesheet)
 │   ├── fonts/
-│   │   └── [Font name].ttf
-│   ├── images/
-│   │   └── [Image name].png
-│   └── js/
-│       ├── components/
-│       │   ├── Slide.vue
-│       │   └── ...
-│       ├── main.js
-│       └── utils/
-│           ├── fileSaver.js
-│           ├── html2canvas.js
-│           └── jsPDF.js
-├── App.vue
-├── index.html
-└── router.js
+│   │   └── [Font name].ttf  (Optional: Custom fonts)
+│   └── images/
+│       └── [Image name].png  (or other image formats)
+├── App.js  (Main application component)
+├── components/
+│   └── [Component name].js  (Reusable UI components)
+├── hooks/  (Optional: Custom React hooks for state management)
+├── index.js  (Entry point for the application)
+├── layouts/  (Optional: Layouts for different page structures)
+├── services/  (Optional: API interaction or data fetching logic)
+├── utils/  (Utility functions used across the application)
+└── router.js  (Configuration for routing between components)
+package.json
 ```
 
 **Usage:**
