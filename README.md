@@ -18,24 +18,23 @@
 
 **Project Structure:**
 ```
-src/
-├── assets/
-│   ├── css/
-│   │   └── style.css  (or your main stylesheet)
-│   ├── fonts/
-│   │   └── [Font name].ttf  (Optional: Custom fonts)
-│   └── images/
-│       └── [Image name].png  (or other image formats)
-├── App.js  (Main application component)
-├── components/
-│   └── [Component name].js  (Reusable UI components)
-├── hooks/  (Optional: Custom React hooks for state management)
-├── index.js  (Entry point for the application)
-├── layouts/  (Optional: Layouts for different page structures)
-├── services/  (Optional: API interaction or data fetching logic)
-├── utils/  (Utility functions used across the application)
-└── router.js  (Configuration for routing between components)
-package.json
+.
+├── PresentationMaker/
+│   └── src/
+│       └──── public/
+│             ├── stores some public media files
+│             └── this also stores index.html
+│       ├── App.js
+│       ├── index.js --> Main application js file
+│       ├── ...
+│       ├── css/
+│       │   └── Stores all css files of all components and pages
+│       ├── pages/
+│       │   └── Each js file contains a single page. Website might have multiple pages.
+│       └── components/
+│           └── Stores all small components that can be reused. If not reusable, pls don't add in here.
+├── package.json
+└── README.md
 ```
 
 **Usage:**
@@ -54,10 +53,12 @@ npm install
 ```
 Bash
 
-npm run dev
+npm run build
+or
+npm start
 ```
 
-4. Access http://localhost:8080 in your web browser.
+4. Access http://localhost:3000 in your web browser.
 
 5. Use the web app to create new PPT files.
    
