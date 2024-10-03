@@ -1,5 +1,7 @@
+import ChoosingSongs from '../pages/choosingSongs'
+import ChoosingTemp from '../pages/choosingTemp'
 import Home from '../pages/home'
-import Following from '../pages/following'
+import Preview from '../pages/preview'
 
 interface publicRoute {
     layout?: React.FC,
@@ -13,12 +15,16 @@ interface privateRoute {
     component: React.FC<any>,
 }
 
+//Public routes
 const publicRoutes : publicRoute[] = [
     {path:'/', component: Home},
-    {path:'/following', component: Following},
+    {path: '/choosingTemp', component: ChoosingTemp},
+    {path: '/choosingSongs', component: ChoosingSongs},
+    {path: '/preview', component: Preview},
 ]
 
 const privateRoutes : privateRoute[] = [
+    //Just in case
 ]
 
 export {publicRoutes, privateRoutes}

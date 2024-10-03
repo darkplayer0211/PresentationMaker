@@ -1,10 +1,13 @@
-import '../css/pages/home/home.css'
+import '../css/pages/home.css';
 
-const Home = () => {
+interface HomeProps {} // Define your props interface if needed
+
+const Home: React.FC<HomeProps> = () => {
     return (
-    <div>
-        Home
-    </div>)
+        <div className="home_container">
+            Home
+        </div>
+    )
 }
 
 export default Home;
