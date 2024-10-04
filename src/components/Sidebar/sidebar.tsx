@@ -6,7 +6,6 @@ interface SidebarProps {
 const Sidebar : React.FC<SidebarProps> = () => {
     return(
         <div className="sidebar_container">
-            Sidebar
         </div>
     )
 }
