@@ -7,8 +7,8 @@ const defaultLayout = ({children}: {children: React.ReactNode}) => {
     return (
         <div className="defaultLayout">
             <Header/>
-            <Sidebar/>
             <div className="defaultLayout_content">{children}</div>
+            <Sidebar />
         </div>
     )
 

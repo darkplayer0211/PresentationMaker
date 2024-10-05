@@ -1,5 +1,5 @@
 .header {
-    width: calc(90% - 80px);
+    width: calc(100% - 100px);
     height: 60px;
     display: flex;
     background-color: var(--background);
@@ -7,21 +7,23 @@
     border-radius: 1000px;
     justify-content: space-between;
     align-items: center;
-    position: absolute;
+    position: relative;
     top: 20px;
     color: var(--text);
-    z-index: 100;
-    padding: 0 40px;
+    padding: 0 20px;
+    z-index: 2;
 }
 
 .header_burgerMenu {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    flex-grow: 1;
-    flex-basis: 0;
     height: 100%;
     gap: 4px;
+}
+.header_burgerMenu:hover {
+    cursor: pointer;
+    position: relative;
 }
 
 .header_burgerMenu_line {
@@ -31,18 +33,17 @@
 }
 
 .header_title {
-    flex-grow: 8;
-    flex-basis: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 24px;
     font-weight: 600;
+    position: absolute;
+    left: 50%;  
+    transform: translateX(-50%);    
 }
 
 .header_userInfo {
-    flex-grow: 1;
-    flex-basis: 0;
     display: flex;
     gap: 8px;
     justify-content: center;
