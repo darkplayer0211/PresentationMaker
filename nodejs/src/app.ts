@@ -1,0 +1,1 @@
+//The srating point of the application(initalizing Express, middleware)
