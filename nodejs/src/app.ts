@@ -1,1 +1,1 @@
-//The srating point of the application(initalizing Express, middleware)
+//The starting point of the application (initalizing Express, middleware)

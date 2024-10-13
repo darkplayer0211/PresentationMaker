@@ -1,1 +1,1 @@
-// File to start the sẻver and connect to the database
+// File to start the server and connect to the database
