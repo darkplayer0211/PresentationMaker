@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-  ]
+, "reactjs/src/components/components"  ]
 }
