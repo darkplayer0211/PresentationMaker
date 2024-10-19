@@ -2,21 +2,22 @@
 
 **Objective:**
 
-* Create a comprehensive web app for PPT file generation using only front-end technologies.
+- Create a comprehensive web app for PPT file generation using only front-end technologies.
 
 **Tech Stack:**
 
-* Frontend: HTML, CSS, TypeScript, Reactjs
+- Frontend: HTML, CSS, TypeScript, Reactjs
 
 **Features (to be implemented):**
 
-* Create new PPT slides
-* Add content (text, images, tables, charts)
-* Format content (fonts, colors, sizes, positions)
-* Navigate between slides
-* Export complete PPT file
+- Create new PPT slides
+- Add content (text, images, tables, charts)
+- Format content (fonts, colors, sizes, positions)
+- Navigate between slides
+- Export complete PPT file
 
 **Project Structure:**
+
 ```
 .
 ├── PresentationMaker/
@@ -41,10 +42,12 @@
 
 1. Clone the project to your machine.
 
-3. Install required libraries:
+2. Install required libraries:
+
 ```
 Bash
 
+cd reactjs
 npm install
 ```
 
@@ -61,4 +64,3 @@ npm start
 4. Access http://localhost:3000 in your web browser.
 
 5. Use the web app to create new PPT files.
-   
