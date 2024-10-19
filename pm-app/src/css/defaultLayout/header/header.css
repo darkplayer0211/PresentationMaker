@@ -1,0 +1,53 @@
+.header {
+    width: calc(100% - 100px);
+    height: 60px;
+    display: flex;
+    background-color: var(--background);
+    backdrop-filter: blur(10px);
+    border-radius: 1000px;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    top: 20px;
+    color: var(--text);
+    padding: 0 20px;
+    z-index: 2;
+}
+
+.header_burgerMenu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    gap: 4px;
+}
+.header_burgerMenu:hover {
+    cursor: pointer;
+    position: relative;
+}
+
+.header_burgerMenu_line {
+    width: 20px;
+    height: 2.5px;
+    background-color: var(--text);
+}
+
+.header_title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 600;
+    position: absolute;
+    left: 50%;  
+    transform: translateX(-50%);    
+}
+
+.header_userInfo {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+}
