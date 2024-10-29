@@ -18,9 +18,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "preserve"
   },
   "include": [
-    "src"
-, "reactjs/src/components/components"  ]
+    "src",
+    "reactjs/src/components/components"
+  ]
 }
