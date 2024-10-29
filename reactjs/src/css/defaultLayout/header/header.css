@@ -51,3 +51,26 @@
     font-size: 16px;
     font-weight: 600;
 }
+
+@media screen and (max-width: 1200px) {
+    .header {
+        height: 40px; 
+    }
+    .header_title {
+        font-size: 16px;
+    }
+    .header_userInfo_username {
+        display: none;
+    }
+    .header_userInfo svg {
+        height: 20px;
+        width: 20px;
+    }
+    .header_burgerMenu {
+        gap: 3px;
+    }
+    .header_burgerMenu_line {
+        width: 15px;
+        height: 1.5px;
+    }
+}

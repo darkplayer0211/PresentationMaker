@@ -26,7 +26,7 @@ const Header : React.FC<HeaderProps> = () => {
                 Presentation Maker
             </div>
             <div className="header_userInfo">
-                <RxAvatar size={32} color='var(--text)'/>
+                <RxAvatar color='var(--text)'/>
                 <div className="header_userInfo_username">
                     Username
                 </div>
