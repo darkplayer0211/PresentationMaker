@@ -74,7 +74,6 @@
     align-items: center;
     background: var(--secondary);
     backdrop-filter: blur(10px);
-    transition: 0.3s;
 }
 .home_getStartedButton:hover {
     cursor: pointer;
