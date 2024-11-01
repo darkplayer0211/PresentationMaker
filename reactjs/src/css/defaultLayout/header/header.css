@@ -3,7 +3,6 @@
     height: 60px;
     display: flex;
     background-color: var(--background);
-    backdrop-filter: blur(10px);
     border-radius: 1000px;
     justify-content: space-between;
     align-items: center;
