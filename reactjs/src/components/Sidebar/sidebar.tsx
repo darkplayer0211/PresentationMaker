@@ -15,9 +15,14 @@ const Sidebar: React.FC<SidebarProps> = () => {
     }
 
     return (
-        <div className="sidebar">
+        <div onClick={(event) => {
+            if (event.target === event.currentTarget) {
+                closeSidebar();
+            }
+        }}
+        className="sidebar">
             <div className="sidebar_content">
-                <div onClick={closeSidebar} className="sidebar_closeBtn">
+                <div onClick={() => closeSidebar()} className="sidebar_closeBtn">
                     <RxCross2 size={28} color='var(--text)' />
                 </div>
                 <p className='sidebar_content_title'>Menu</p>

@@ -74,12 +74,13 @@
     align-items: center;
     background: var(--secondary);
     backdrop-filter: blur(10px);
-    transition: 0.3s;
+    transition: .1s linear;
 }
 .home_getStartedButton:hover {
     cursor: pointer;
     backdrop-filter: blur(30px);
     scale: 1.1;
+
 
 }
 
