@@ -13,7 +13,7 @@ const Home: React.FC<HomeProps> = () => {
                 
             </div>
             <div className="home_backgroundImg">
-                <img src='/home_background_img.jpg' />
+                <img src='/home_background_img.jpg' alt=""/>
             </div>
         </div>
     )
