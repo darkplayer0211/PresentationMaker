@@ -27,7 +27,7 @@
     "preview": "vite preview",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none npm run dev\" \"npm run electron:start\"",
     "electron:build": "npm run build && electron-builder -c.extraMetadata.main=build/electron.js",
-    "electron:start": "wait-on http://localhost:5173 && electron ."
+    "electron:start": "wait-on http://localhost:3000 && electron ."
   },
   "eslintConfig": {
     "extends": [
