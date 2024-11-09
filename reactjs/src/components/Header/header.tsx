@@ -1,6 +1,5 @@
 import '../../css/defaultLayout/header/header.css';
 import { RxAvatar } from "react-icons/rx";
-import Sidebar from '../Sidebar/sidebar';
 
 interface HeaderProps {
 }
