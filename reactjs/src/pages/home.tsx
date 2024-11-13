@@ -1,4 +1,4 @@
-import CallApiBtn from '../components/CallAPIButton/callApiBtn';
+import LinkBtn from '../components/LinkBtn/LinkBtn';
 import '../css/pages/home.css';
 
 interface HomeProps { } // Define your props interface if needed
@@ -9,11 +9,11 @@ const Home: React.FC<HomeProps> = () => {
             <div className="home_greeting">
                 <h1>Chào mừng,</h1>
                 <p>Bắt đầu tạo tệp trình chiếu</p>
-                <CallApiBtn />
+                <LinkBtn to='/choosingSeason' text='Bắt đầu nào!'/>
                 
             </div>
             <div className="home_backgroundImg">
-                <img src='/home_background_img.jpg' />
+                <img src='/home_background_img.jpg' alt='background'/>
             </div>
         </div>
     )

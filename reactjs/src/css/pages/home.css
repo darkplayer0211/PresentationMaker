@@ -68,20 +68,20 @@
 .home_getStartedButton {
     display: flex;
     width: 90%;
-    height: 50px;
     border-radius: 20px;
     justify-content: center;
     align-items: center;
     background: var(--secondary);
     backdrop-filter: blur(10px);
-    transition: .1s linear;
+    padding: 20px;
 }
 .home_getStartedButton:hover {
     cursor: pointer;
     backdrop-filter: blur(30px);
     scale: 1.1;
-
-
+}
+.home_getStartedButton {
+    text-decoration: none;
 }
 
 .home_getStartedButton p {
@@ -90,8 +90,12 @@
     color: var(--highlight-text);
 }
 
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: 1200px) {
     .home_greeting img {
         display: none;
+    }
+
+    .home_getStartedButton p {
+        font-size: 20px;
     }
 }

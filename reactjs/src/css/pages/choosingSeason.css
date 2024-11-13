@@ -1,0 +1,69 @@
+.choosingSeason {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--background);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.choosingSeason_title {
+    padding-top: 80px;
+    width: 80%;
+    font-size: 32px;
+    height: 40px;
+}
+
+.choosingSeason_seasons {
+    display: flex;
+    width: calc(100% - 60px);
+    height: calc(100% - 120px - 24px - 8px);
+    padding: 12px 0;
+}
+
+.choosingSeason_seasons_seasonsList {
+    flex-grow: 3;
+    flex-basis: 0;
+    padding-right: 24px;
+    height: fit-content;
+}
+
+.choosingSeason_seasons_templatesList {
+    flex-grow: 7;
+    flex-basis: 0;
+    border-left: 10px solid var(--background);
+    padding-left: 24px;
+    max-height: 80vh;
+}
+
+.choosingSeason_seasons_seasonsList_list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+
+}
+.choosingSeason_seasons_seasonsList_list li {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    font-size: 18px;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+.choosingSeason_seasons_seasonsList_list li:hover,
+.activeSeason {
+    background-color: var(--highlight-background) !important;
+    color: white;
+}
+
+.choosingSeason_seasons_seasonsList_title {
+    font-size: 24px;    
+    font-weight: 600;
+    margin-bottom: 12px;
+    width: 100%;
+}
+

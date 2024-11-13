@@ -1,13 +1,13 @@
 .header {
     width: calc(100% - 100px);
-    height: 60px;
+    min-height: 60px;
     display: flex;
     background-color: var(--background);
-    border-radius: 1000px;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
     justify-content: space-between;
     align-items: center;
-    position: relative;
-    top: 20px;
+    position: absolute;
     color: var(--text);
     padding: 0 20px;
     z-index: 2;

@@ -1,0 +1,35 @@
+.templateTab {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 90%;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.templateTab::-webkit-scrollbar {
+    display: none;
+}
+
+.templateTab_item {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 12px;
+    background-color: white;
+    border-radius: 8px;
+}
+.templateTab_item:hover {
+    cursor: pointer;
+    background-color: var(--highlight-background);
+    color: var(--highlight-text);
+}
+
+.templateTab_item_title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.templateTab_item_description {
+    font-size: 18px;
+    font-weight: 600;
+}

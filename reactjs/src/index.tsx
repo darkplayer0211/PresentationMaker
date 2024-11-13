@@ -3,13 +3,20 @@ import ReactDOM from 'react-dom/client';
 import './css/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ChoosingSeason from './pages/choosingSeason';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <Routes>
+        <Route path='/' element={<App />} />
+        <Route path='/choosingSeason' element={<ChoosingSeason />}/>
+      </Routes>
+    </Router>
   </React.StrictMode>
 );
 
