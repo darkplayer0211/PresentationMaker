@@ -1,24 +1,18 @@
 .choosingSeason {
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 80px);
     background-color: var(--background);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-}
-
-.choosingSeason_title {
     padding-top: 80px;
-    width: 80%;
-    font-size: 32px;
-    height: 40px;
 }
 
 .choosingSeason_seasons {
     display: flex;
     width: calc(100% - 60px);
-    height: calc(100% - 120px - 24px - 8px);
+    height: calc(100% - 24px - 8px);
     padding: 12px 0;
 }
 
@@ -48,7 +42,7 @@
     list-style: none;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: var(--background);
     font-size: 18px;
     padding: 12px;
     border-radius: 12px;

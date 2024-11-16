@@ -1,7 +1,7 @@
-import Header from '../components/Header/header';
 import TemplateTab from '../components/TemplateTab/TemplateTab';
 import '../css/pages/choosingSeason.css'
 import { useState } from 'react';
+import DefaultLayout from '../layouts/DefaultLayout';
 
 interface ChoosingSeasonProps {} // Define your props interface if needed
 
@@ -10,11 +10,8 @@ const ChoosingSeason: React.FC<ChoosingSeasonProps> = () => {
     const [activeSeason, setActiveSeason] = useState(0);
     
     return (
+        <DefaultLayout>
             <div className='choosingSeason'>
-                <Header />
-                <div className='choosingSeason_title'>
-                    Title
-                </div>
                 <div className='choosingSeason_seasons'>
                     <div className='choosingSeason_seasons_seasonsList'>
                         <div className='choosingSeason_seasons_seasonsList_title'>Chọn mùa lễ</div>
@@ -35,6 +32,7 @@ const ChoosingSeason: React.FC<ChoosingSeasonProps> = () => {
                     </div>
                 </div>
             </div>
+        </DefaultLayout>
     )
 }
 

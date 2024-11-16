@@ -1,4 +1,9 @@
 import '../../css/templateTab/templateTab.css'
+import { useDispatch, useSelector } from 'react-redux';
+import { SeasonType } from '../../store/season/season';
+import { TemplateType } from '../../store/template/template';
+import { chooseTemplate } from '../../store/template/template';
+import { Link } from 'react-router-dom';
 
 interface TemplateTabProps {
     seasonId: number,
@@ -6,111 +11,34 @@ interface TemplateTabProps {
 
 const TemplateTab : React.FC<TemplateTabProps> = ({seasonId}) => {
 
-    const seasons = [{
-        id: 0,
-        templates: [{
-            name: 'Mùa vọng 1',
-            description: 'Mô tả của mùa vọng 1',
-            noSlides: 3,
-        },{
-            name: 'Mùa vọng 2',
-            description: 'Mô tả của mùa vọng 2',
-            noSlides: 3,
-        },{
-            name: 'Mùa vọng 3',
-            description: 'Mô tả của mùa vọng 3',
-            noSlides: 3,
-        },{
-            name: 'Mùa vọng 3',
-            description: 'Mô tả của mùa vọng 3',
-            noSlides: 3,
-        },{
-            name: 'Mùa vọng 3',
-            description: 'Mô tả của mùa vọng 3',
-            noSlides: 3,
-        },{
-            name: 'Mùa vọng 3',
-            description: 'Mô tả của mùa vọng 3',
-            noSlides: 3,
-        },{
-            name: 'Mùa vọng 3',
-            description: 'Mô tả của mùa vọng 3',
-            noSlides: 3,
-        },
-    ]},{
-        id: 1,
-        templates: [{
-            name: 'Mùa giáng sinh 1',
-            description: 'Mô tả của mùa giáng sinh 1',
-            noSlides: 3,
-        },{
-            name: 'Mùa giáng sinh 2',
-            description: 'Mô tả của mùa giáng sinh 2',
-            noSlides: 3,
-        },{
-            name: 'Mùa giáng sinh 3',
-            description: 'Mô tả của mùa giáng sinh 3',
-            noSlides: 3,
-        },
-    ]},{
-        id: 2,
-        templates: [{
-            name: 'Mùa thường niên 1',
-            description: 'Mô tả của mùa thường niên 1',
-            noSlides: 3,
-        },{
-            name: 'Mùa thường niên 2',
-            description: 'Mô tả của mùa thường niên 2',
-            noSlides: 3,
-        },{
-            name: 'Mùa thường niên 3',
-            description: 'Mô tả của mùa thường niên 3',
-            noSlides: 3,
-        },
-    ]},{
-        id: 3,
-        templates: [{
-            name: 'Mùa chay 1',
-            description: 'Mô tả của mùa chay 1',
-            noSlides: 3,
-        },{
-            name: 'Mùa chay 2',
-            description: 'Mô tả của mùa chay 2',
-            noSlides: 3,
-        },{
-            name: 'Mùa chay 3',
-            description: 'Mô tả của mùa chay 3',
-            noSlides: 3,
-        },
-    ]},{
-        id: 4,
-        templates: [{
-            name: 'Mùa phục sinh 1',
-            description: 'Mô tả của mùa phục sinh 1',
-            noSlides: 3,
-        },{
-            name: 'Mùa phục sinh 2',
-            description: 'Mô tả của mùa phục sinh 2',
-            noSlides: 3,
-        },{
-            name: 'Mùa phục sinh 3',
-            description: 'Mô tả của mùa phục sinh 3',
-            noSlides: 3,
-        },
-    ]},
-]
+    const seasons = useSelector((state: {seasons: SeasonType[]}) => {
+        return state.seasons
+    });
+
+    const dispatch = useDispatch();
+
+    const handleTemplateChoose = (template: TemplateType) => {
+        dispatch(chooseTemplate(template));
+    }
 
     return (
         <div className="templateTab">
-            {seasons[seasonId].templates.map((template, index) => {
-                return <div className="templateTab_item">
-                    <div>{template.name}</div>
-                    <div>{template.description}</div>
-                    <div> Số slide: {template.noSlides}</div>
-                </div>
+            {seasons[seasonId].templates.map((template : TemplateType, index : number) => {
+                return <Link to={'/choosingSongs'} key={index}
+                onClick={() => handleTemplateChoose(template)}
+                className="templateTab_item">
+                    <div className='templateTab_item_name'>{template.name}</div>
+                    <div className='templateTab_item_description'>{template.description}</div>
+                    <div className='templateTab_item_noSlides'> Số slide: <p>{template.noSlides}</p></div>
+                </Link>
             })}
         </div>
     )
 }
 
-export default TemplateTab;
+export default TemplateTab;/*************  ✨ Codeium Command ⭐  *************/
+/******  316fd710-fcd1-43c2-bb05-99f846453155  *******/    /**
+     * Handles choosing a template from the list of templates. Dispatches the chooseTemplate action 
+     * from the template slice with the chosen template as the payload.
+     * @param {TemplateType} template - The chosen template.
+     */
