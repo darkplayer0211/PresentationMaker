@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "electron": "^33.0.2",
+    "typedoc": "^0.26.11",
     "wait-on": "^8.0.1"
   }
 }
