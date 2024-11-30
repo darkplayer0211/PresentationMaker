@@ -4,13 +4,13 @@ from pptx import Presentation
 
 def extract_song_data(pptx_path):
     """
-    Extracts song data from a single PPTX file.
+    Trích xuất dữ liệu bài hát từ một tệp PPTX.
 
-    Parameters:
-        pptx_path (str): Path to the PPTX file.
+    Tham số:
+        pptx_path (str): Đường dẫn đến tệp PPTX.
 
-    Returns:
-        dict: A dictionary with keys 'Song_name', 'Song_lyrics', 'Song_category'.
+    Trả về:
+        dict: Một dictionary với các khóa 'Song_name' và 'Song_lyrics'.
     """
     try:
         prs = Presentation(pptx_path)
@@ -20,35 +20,38 @@ def extract_song_data(pptx_path):
 
     song_data = {
         'Song_name': '',
-        'Song_lyrics': '',
-        'Song_category': ''
+        'Song_lyrics': ''
     }
 
+    lyrics_parts = []
+
     for slide in prs.slides:
-        # Extract the title (Song_name)
+        # Trích xuất tiêu đề (Song_name)
         title = slide.shapes.title
         if title and title.text:
             song_data['Song_name'] = title.text.strip()
 
-        # Extract the content
+        # Trích xuất nội dung (Song_lyrics)
         for shape in slide.shapes:
             if not shape.has_text_frame:
                 continue
-            text = shape.text_frame.text
-            if 'Song_lyrics:' in text:
-                lyrics = text.split('Song_lyrics:')[1].strip()
-                song_data['Song_lyrics'] = lyrics
-            elif 'Song_category:' in text:
-                classification = text.split('Song_category:')[1].strip()
-                song_data['Song_category'] = classification
+            text = shape.text_frame.text.strip()
+            # Bỏ qua văn bản tiêu đề
+            if text == song_data['Song_name']:
+                continue
+            # Thêm văn bản vào lyrics_parts
+            lyrics_parts.append(text)
+
+    # Kết hợp tất cả phần của lời bài hát
+    song_data['Song_lyrics'] = '\n'.join(lyrics_parts).strip()
 
     return song_data
 
 def main():
-    # Define paths
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    pptx_dir = os.path.join(project_root, 'data', 'pptx')
-    output_dir = os.path.join(project_root, 'data', 'output')
+    # Định nghĩa đường dẫn
+    project_root = os.getcwd()
+    pptx_dir = os.path.join(project_root, 'src', 'backend', 'pptx-generator', 'data', 'pptx')
+    output_dir = os.path.join(project_root, 'src', 'backend', 'pptx-generator', 'data', 'output')
     output_csv = os.path.join(output_dir, 'songs.csv')
 
     print(f"Project Root: {project_root}")
@@ -56,18 +59,18 @@ def main():
     print(f"Output Directory: {output_dir}")
     print(f"Output CSV: {output_csv}")
 
-    # Ensure output directory exists
+    # Đảm bảo thư mục output tồn tại
     os.makedirs(output_dir, exist_ok=True)
 
-    # Initialize list to hold all song data
+    # Khởi tạo danh sách lưu trữ dữ liệu bài hát
     all_songs = []
 
-    # Check if pptx_dir exists
+    # Kiểm tra xem thư mục pptx_dir có tồn tại không
     if not os.path.exists(pptx_dir):
         print(f"Error: The directory {pptx_dir} does not exist.")
         return
 
-    # List all PPTX files
+    # Liệt kê tất cả các tệp PPTX
     pptx_files = [f for f in os.listdir(pptx_dir) if f.lower().endswith('.pptx')]
     if not pptx_files:
         print(f"No PPTX files found in {pptx_dir}.")
@@ -75,7 +78,7 @@ def main():
 
     print(f"Found {len(pptx_files)} PPTX files to process.")
 
-    # Iterate over all PPTX files in pptx_files/
+    # Duyệt qua tất cả các tệp PPTX trong pptx_dir
     for filename in pptx_files:
         pptx_path = os.path.join(pptx_dir, filename)
         print(f"Processing file: {filename}")
@@ -89,17 +92,17 @@ def main():
         else:
             print(f"Failed to extract data from {filename}")
 
-    # Check if any songs were extracted
+    # Kiểm tra xem có bài hát nào được trích xuất không
     if not all_songs:
         print("No song data was extracted. Please check the PPTX files' structure.")
         return
 
-    # Create a DataFrame
-    df = pd.DataFrame(all_songs, columns=['Song_name', 'Song_lyrics', 'Song_category'])
+    # Tạo DataFrame
+    df = pd.DataFrame(all_songs, columns=['Song_name', 'Song_lyrics'])
 
-    # Save to CSV
+    # Lưu vào CSV
     try:
-        df.to_csv(output_csv, index=False, encoding='utf-8-sig')  # 'utf-8-sig' for proper encoding in Excel
+        df.to_csv(output_csv, index=False, encoding='utf-8-sig')  # 'utf-8-sig' để hiển thị đúng trong Excel
         print(f"\nAll data has been successfully saved to {output_csv}")
     except Exception as e:
         print(f"Error saving CSV file: {e}")
