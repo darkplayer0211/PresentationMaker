@@ -1,0 +1,36 @@
+{
+    "openFile": [
+        {
+            "type": 1,
+            "id": "template1",
+            "title": "Mẫu Template 1",
+            "seasonType": 1,
+            "slides": [
+                {
+                    "slideNumber": 1,
+                    "content": "Hướng dẫn sử dụng template"
+                },
+                {
+                    "slideNumber": 2,
+                    "content": "Slide mẫu với hình ảnh"
+                }
+            ]
+        },
+        {
+            "type": 1,
+            "id": "template2",
+            "title": "Mẫu Template 2",
+            "seasonType": 2,
+            "slides": [
+                {
+                    "slideNumber": 1,
+                    "content": "Hướng dẫn sử dụng template"
+                },
+                {
+                    "slideNumber": 2,
+                    "content": "Slide mẫu với hình ảnh"
+                }
+            ]
+        }
+    ]
+}
