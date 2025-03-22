@@ -47,8 +47,13 @@
 ```
 Bash
 
-cd reactjs
+# Rust: https://www.rust-lang.org/tools/install
+WSL: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Node:
+cd pm-app
 npm install
+
 ```
 
 3. Run the project:
@@ -56,11 +61,13 @@ npm install
 ```
 Bash
 
-npm run build
+cd src-tauri
+
+npx tauri dev
 or
-npm start
+npx tauri build
 ```
 
-4. Access http://localhost:3000 in your web browser.
+4. A desktop app will pop up || Access http://localhost:3000 in your web browser.
 
 5. Use the web app to create new PPT files.

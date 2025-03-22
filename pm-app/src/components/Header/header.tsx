@@ -1,23 +1,15 @@
 import '../../css/defaultLayout/header/header.css';
 import { RxAvatar } from "react-icons/rx";
-import Sidebar from '../Sidebar/sidebar';
+import { memo } from 'react';
 
 interface HeaderProps {
 }
 
 const Header : React.FC<HeaderProps> = () => {
 
-    const openSidebar = () => {
-        const sidebar = document.querySelector('.sidebar') as HTMLElement;
-        sidebar.classList.add('sidebar_open');
-
-        const sidebarContent = document.querySelector('.sidebar_content') as HTMLElement;
-        sidebarContent.classList.add('sidebar_content_open');
-    }
-
     return(
         <div className="header">
-            <div onClick={openSidebar} className="header_burgerMenu">
+            <div className="header_burgerMenu">
                 <div className="header_burgerMenu_line"></div>
                 <div className="header_burgerMenu_line"></div>
                 <div className="header_burgerMenu_line"></div>
@@ -26,7 +18,7 @@ const Header : React.FC<HeaderProps> = () => {
                 Presentation Maker
             </div>
             <div className="header_userInfo">
-                <RxAvatar size={32} color='var(--text)'/>
+                <RxAvatar color='var(--text)'/>
                 <div className="header_userInfo_username">
                     Username
                 </div>
@@ -35,4 +27,4 @@ const Header : React.FC<HeaderProps> = () => {
     )
 }
 
-export default Header;
+export default memo(Header); //Header
