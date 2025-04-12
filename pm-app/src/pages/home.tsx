@@ -9,7 +9,7 @@ const Home: React.FC<HomeProps> = () => {
             <div className="home_greeting">
                 <h1>Chào mừng,</h1>
                 <p>Bắt đầu tạo tệp trình chiếu</p>
-                <LinkBtn to='/choosingSeason' text='Bắt đầu nào!'/>
+                <LinkBtn to='/choosingSongs' text='Bắt đầu nào!'/>
                 
             </div>
             <div className="home_backgroundImg">

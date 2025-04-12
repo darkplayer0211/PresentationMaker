@@ -1,5 +1,5 @@
 import './css/App.css';
-import DefaultLayout from './layouts/DefaultLayout';
+import DefaultLayout from './layouts/defaultLayout';
 import Home from './pages/home';
 function App() {
   return (
