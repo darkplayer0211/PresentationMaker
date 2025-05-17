@@ -9,7 +9,7 @@ export class Songs {
   }
 
   setSongs = (songs: SongType[]) => {
-    this.songs = songs;
+    this.songs = songs.map((item) => new SongType(item));
   };
 
   searchSong = (query: string) => {
@@ -19,8 +19,8 @@ export class Songs {
         result.push(song);
       song.slides.forEach((slide) => {
         if (
-          (slide.title.toLowerCase().includes(query.toLowerCase()) ||
-          slide.content.toLowerCase().includes(query.toLowerCase()))
+          (slide.title.text.toLowerCase().includes(query.toLowerCase()) ||
+            slide.content.text.toLowerCase().includes(query.toLowerCase()))
           && !result.includes(song)
         )
           result.push(song);

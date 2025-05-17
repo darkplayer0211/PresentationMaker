@@ -34,14 +34,18 @@
     align-items: center;
     cursor: pointer;
     border-radius: 12px;
-    background-color: var(--background);
 }
 .choosingSongs_songType ul li:hover {
-    background-color: var(--highlight-background);
     color: var(--highlight-text);
 }
 .activeSongType {
     background-color: var(--highlight-background) !important;
+    color: var(--highlight-text);
+}
+.choosingSongs_songList_item {
+}
+.choosingSongs_songList_item:hover {
+    background-color: var(--highlight-background);
     color: var(--highlight-text);
 }
 
@@ -90,6 +94,7 @@
 .choosingSongs_songList ul li:hover {
     background-color: var(--highlight-background);
     cursor: pointer;
+    color: var(--highlight-text);
 }
 .choosingSongs_songList ul li:hover p {
     color: var(--highlight-text);

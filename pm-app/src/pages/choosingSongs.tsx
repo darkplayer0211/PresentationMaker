@@ -1,16 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "../css/pages/choosingSongs.css";
 import DefaultLayout from "../layouts/defaultLayout";
 import { observer } from "mobx-react";
 import { songsStore, SongType } from "../store";
-interface ChoosingSongsProps {} // Define your props interface if needed
+import listSong from "../database/listSong.json"
+interface ChoosingSongsProps { } // Define your props interface if needed
 
 const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
+  const initSongs: Array<SongType> = JSON.parse(JSON.stringify(listSong));
   const handleBack = () => {
     window.history.back();
   };
 
   const { songs, searchSong } = songsStore;
+
+  useEffect(() => {
+    const init = async () => {
+      songsStore.setSongs(initSongs);
+    }
+    init();
+  }, []);
+
+  const handleChonsen = (song: SongType) => {
+    song.setIsChosen(true);
+  };
+
+  const handleCancleChosen = (song: SongType) => {
+    song.setIsChosen(false);
+  };
 
   return (
     <DefaultLayout>
@@ -25,14 +42,22 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
             />
             <ul>
               {songs.map((song: SongType, index: number) => (
-                <li
-                  key={index}
-                  className={song.isChosen ? "activeSongType" : ""}
-                  onClick={() => song.setIsChosen(!song.chosen)}
-                  id={index.toString()}
-                >
-                  {song.name}
-                </li>
+                <div className={`choosingSongs_songList_item ${song.isChosen ? "activeSongType" : ""}`} key={index}>
+                  <li
+                    key={index}
+                    onClick={() => handleChonsen(song)}
+                    id={index.toString()}
+                  >
+                    Tên: {song.slides[0].title.text}
+                  </li>
+                  {song.isChosen && (
+                    <button
+                      onClick={() => handleCancleChosen(song)}>
+                      Bỏ chọn
+                    </button>)
+                  }
+
+                </div>
               ))}
             </ul>
           </div>

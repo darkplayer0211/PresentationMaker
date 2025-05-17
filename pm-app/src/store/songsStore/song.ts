@@ -1,38 +1,65 @@
 import { makeAutoObservable } from "mobx";
 
+interface SongDataType {
+  id: string;
+  name: string;
+  chosen: boolean;
+  slides: SlideType[];
+}
+
 interface SlideType {
   slideNum: number;
-  title: string;
-  content: string;
-  titleFont: string | null;
-  titleFontSize: number;
-  contentFont: string | null;
-  contentFontSize: number;
+  title: {
+    text: string;
+    fontName: string;
+    fontSize: number;
+  };
+  content: {
+    text: string;
+    fontName: string;
+    fontSize: number;
+  };
 }
 
 export class SongType {
   id = "";
   name = "";
   chosen = false;
-  slides: SlideType[] = [{
-    slideNum: 0,
-    title: "",
-    content: "",
-    titleFont: null,
-    titleFontSize: 0,
-    contentFont: null,
-    contentFontSize: 0,
-  }];
+  slides: SlideType[] = [
+    {
+      slideNum: 0,
+      title: {
+        text: "",
+        fontName: "",
+        fontSize: 0,
+      },
+      content: {
+        text: "",
+        fontName: "",
+        fontSize: 0,
+      },
+    },
+  ];
 
-  constructor() {
+  constructor(song?: SongDataType) {
     makeAutoObservable(this);
+    if (song) {
+      this.id = song.id;
+      this.name = song.name;
+      this.chosen = song.chosen;
+      this.slides = song.slides.map((slide) => ({
+        slideNum: slide.slideNum,
+        title: slide.title,
+        content: slide.content,
+      }));
+    }
   }
 
-  setSlides = (slidesData: SlideType[]) => {
+  setSlides(slidesData: SlideType[]) {
     this.slides = slidesData;
-  };
+  }
 
-  setIsChosen = (data: boolean) => {
+  setIsChosen(data: boolean) {
     this.chosen = data;
   }
 
