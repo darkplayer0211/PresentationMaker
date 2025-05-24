@@ -1,39 +1,83 @@
 import { makeAutoObservable } from "mobx";
 
+export interface SongDataType {
+  id: string;
+  fileName: string;
+  chosen: boolean;
+  showCancelBtn: boolean;
+  slides: SlideType[];
+}
+
 interface SlideType {
   slideNum: number;
-  title: string;
-  content: string;
-  titleFont: string | null;
-  titleFontSize: number;
-  contentFont: string | null;
-  contentFontSize: number;
+  id: string;
+  isChosen?: boolean;
+  title: {
+    text: string;
+    fontName: string;
+    fontSize: number;
+  };
+  content: {
+    text: string;
+    fontName: string;
+    fontSize: number;
+  };
 }
 
 export class SongType {
   id = "";
-  name = "";
+  fileName = "";
   chosen = false;
-  slides: SlideType[] = [{
-    slideNum: 0,
-    title: "",
-    content: "",
-    titleFont: null,
-    titleFontSize: 0,
-    contentFont: null,
-    contentFontSize: 0,
-  }];
+  showCancelBtn = false;
+  slides: SlideType[] = [
+    {
+      slideNum: 0,
+      id: "0",
+      isChosen: false,
+      title: {
+        text: "",
+        fontName: "",
+        fontSize: 0,
+      },
+      content: {
+        text: "",
+        fontName: "",
+        fontSize: 0,
+      },
+    },
+  ];
 
-  constructor() {
+  constructor(song?: SongDataType) {
     makeAutoObservable(this);
+    if (song) {
+      this.id = song.id;
+      this.fileName = song.fileName;
+      this.chosen = song.chosen;
+      this.showCancelBtn = song.showCancelBtn
+      this.slides = song.slides.map((slide) => ({
+        slideNum: slide.slideNum,
+        id: slide.id,
+        title: slide.title,
+        content: slide.content,
+        isChosen: slide.isChosen,
+      }));
+    }
   }
 
-  setSlides = (slidesData: SlideType[]) => {
+  setSlides(slidesData: SlideType[]) {
     this.slides = slidesData;
-  };
+  }
 
-  setIsChosen = (data: boolean) => {
+  getSlides() {
+    return this.slides;
+  }
+
+  setIsChosen(data: boolean) {
     this.chosen = data;
+  }
+
+  setShowCancelBtn(data: boolean) {
+    this.showCancelBtn = data;
   }
 
   get isChosen() {

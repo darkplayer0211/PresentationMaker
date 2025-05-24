@@ -34,14 +34,42 @@
     align-items: center;
     cursor: pointer;
     border-radius: 12px;
-    background-color: var(--background);
 }
 .choosingSongs_songType ul li:hover {
-    background-color: var(--highlight-background);
     color: var(--highlight-text);
 }
 .activeSongType {
     background-color: var(--highlight-background) !important;
+    color: var(--highlight-text);
+}
+
+.choosingSongs_songList_item {
+    display: flex;
+    flex-direction: column;
+    min-height: 80px !important;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: var(--background);
+}
+
+.choosingSongs_songList ul li {
+    padding: 0 12px !important;
+    text-align: left !important;
+}
+
+.choosingSongs_songList_item button {
+    margin-right: 5px;
+    width: fit-content;
+}
+
+.choosingSongs_songList_item_chosen {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 5px;
+}
+
+.choosingSongs_songList_item:hover {
+    background-color: var(--highlight-background);
     color: var(--highlight-text);
 }
 
@@ -62,22 +90,55 @@
     display: flex;
     flex-direction: column;
 }
-.choosingSongs_songList ul {
+/* Start Custom scrollbar styles */
+.custom-scroll {
     list-style: none;
     margin: 0;
-    padding: 0;
     flex-grow: 1;
     flex-basis: 0;
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    overflow: scroll;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    gap: 20px;
+    max-height: 565px;
+    overflow-y: auto;
+    scrollbar-color: #888 #f0f0f0;
+    scrollbar-width: auto;
+    padding: 10px;         /* Cách nội dung khỏi scrollbar */
+    box-sizing: content-box;    /* Đảm bảo padding không bị tràn */
 }
-.choosingSongs_songList ul::-webkit-scrollbar {
-    display: none;
+
+/* Webkit (Chrome, Edge, Safari) */
+.custom-scroll::-webkit-scrollbar {
+    width: 16px; /* giữ nguyên mặc định để hiển thị mũi tên */
 }
+
+.custom-scroll::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 8px;
+    border: 4px solid #f0f0f0; /* tạo khoảng cách với track */
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+/* Giữ lại mũi tên cuộn lên/xuống */
+.custom-scroll::-webkit-scrollbar-button {
+    display: block;
+    background-color: #ccc;
+    height: 16px;
+}
+
+/* Hover hiệu ứng cho mũi tên */
+.custom-scroll::-webkit-scrollbar-button:hover {
+    background-color: #aaa;
+}
+/* End Custom scrollbar styles */
+
 .choosingSongs_songList ul li {
     padding: 12px;
     margin: 0;
@@ -90,6 +151,7 @@
 .choosingSongs_songList ul li:hover {
     background-color: var(--highlight-background);
     cursor: pointer;
+    color: var(--highlight-text);
 }
 .choosingSongs_songList ul li:hover p {
     color: var(--highlight-text);
@@ -148,6 +210,18 @@
     width: 30%;
     min-height: 20%;
     background-color: white;
+}
+
+.choosingSongs_edit_preview_slideList_item {
+    border: var(--primary) 2px solid;
+    height: fit-content;
+    min-height: 100px;
+    border-radius: 8px;
+    padding: 8px;
+}
+.choosingSongs_edit_preview_slideList_item:hover {
+    background-color: var(--primary);
+    color: var(--highlight-text);
 }
 
 .choosingSongs_preview_buttons {
