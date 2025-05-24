@@ -58,8 +58,6 @@ export class SlideType {
     }
 
     addSlide = (slide: Slide, position: number) => {
-        console.log('this.slides ', this.slides);
-
         if (position < 0 || position > this.slides.length) {
             throw new Error("Invalid position");
         }
