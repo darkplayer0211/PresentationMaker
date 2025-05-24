@@ -1,4 +1,7 @@
 import { makeAutoObservable } from "mobx";
+import song, { SongType } from "../songsStore/song";
+import { ImageType } from "../imagesStore";
+import songsStore from "../songsStore";
 
 export interface Slide {
     slideNum: number;
@@ -17,58 +20,24 @@ export interface Slide {
 }
 
 export class SlideType {
-    slides: Slide[] = [];
+    data: (SongType | ImageType)[] = [];
 
-    constructor(slides?: Slide[]) {
+    constructor() {
         makeAutoObservable(this);
-        if (slides) {
-            this.slides = slides.map((slide) => ({
-                slideNum: slide.slideNum,
-                isBlankPage: slide.isBlankPage || true,
-                isChosen: slide.isChosen || false,
-                title: slide.title,
-                content: slide.content,
-            }));
-        }
     }
 
-    setSlides = (slidesData: Slide[]) => {
-        this.slides = slidesData;
-    }
+    addItem = (item: SongType | ImageType) => {
+        this.data.push(item);
+    };
 
-    setChosen = (slideChosen: Slide) => {
-        this.slides.find((slide) => {
-            if (slide.slideNum === slideChosen.slideNum) {
-                slide.isChosen = true;
-            } else {
-                slide.isChosen = false;
-            }
-        });
-    }
+    removeItem = (id: string) => {
+        this.data = this.data.filter((i) => i.id !== id);
+    };
 
-    setBlankPage = (slideBlank: Slide, position: number) => {
-        if (position < 0 || position > this.slides.length) {
-            throw new Error("Invalid position");
-        }
-        this.slides.splice(position, 0, slideBlank);
-    }
+    getSongSlides = (id: string) => {
+        return songsStore.songs.find((song) => song.id === id)?.slides;
+    };
 
-    getSlide = () => {
-        return this.slides || [];
-    }
-
-    addSlide = (slide: Slide, position: number) => {
-        if (position < 0 || position > this.slides.length) {
-            throw new Error("Invalid position");
-        }
-        const isBlankPage = slide.isBlankPage || true;
-        this.slides.splice(position, isBlankPage ? 1 : 0, slide);
-    }
-
-    deleteSlide = (slideNum: number) => {
-        const newArray = this.slides.filter(item => item.slideNum !== slideNum);
-        this.slides = newArray;
-    }
 }
 
 const slidesStore = new SlideType();

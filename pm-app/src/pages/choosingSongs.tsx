@@ -5,6 +5,8 @@ import { observer } from "mobx-react";
 import { slidesStore, songsStore, SongType } from "../store";
 import listSong from "../database/listSong.json"
 import { Slide } from "../store/slidesStore/slide";
+import { ImageType } from "../store/imagesStore";
+import { v4 as uuidv4 } from 'uuid';
 interface ChoosingSongsProps { } // Define your props interface if needed
 
 const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
@@ -31,34 +33,15 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
   };
 
   const { songs, searchSong } = songsStore;
-  const { getSlide, setSlides, addSlide, deleteSlide } = slidesStore;
-
-  useEffect(() => {
-    const init = async () => {
-      songsStore.setSongs(initSongs);
-      setSlides([initSlide]);
-      setResultsongs(songs);
-    }
-    init();
-  }, []);
+  const { data: slidesData, getSongSlides, addItem } = slidesStore;
 
   const handleAddBlankSlide = (position: number) => {
-    const newSlide: Slide = {
-      slideNum: 0,
-      isBlankPage: true,
-      isChosen: false,
-      title: {
-        text: "",
-        fontName: "",
-        fontSize: 0
-      },
-      content: {
-        text: "",
-        fontName: "",
-        fontSize: 0
-      }
+    const newImageSlide: ImageType = {
+      id: uuidv4(),
+      name: "",
+      image: ""
     };
-    addSlide(newSlide, position);
+    addItem(newImageSlide);
   }
 
   /**
@@ -67,14 +50,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
    * @param e - The HTMLButtonElement event
    */
   const handleChonsenSong = (song: SongType) => {
-    const slideChosenList = getSlide().filter((slide: Slide) => slide.isChosen);
-    if (!slideChosenList.length) {
-      return;
-    }
-    song.setIsChosen(true);
-    song.getSlides().forEach((slide: Slide, index) => {
-      addSlide(slide, index);
-    });
+    
   };
 
   /**
@@ -84,8 +60,6 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
    */
   const handleCancleChosen = (song: SongType, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    song.setIsChosen(false);
-    getSlide().forEach((slide: Slide) => { deleteSlide(slide.slideNum) });
   };
 
   /**
@@ -99,7 +73,6 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
   }
 
   const handleChosenSlide = (slide: Slide) => {
-    slidesStore.setChosen(slide);
   }
 
   return (
@@ -141,14 +114,31 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
               <div className="choosingSongs_edit_preview_slideList">
                 <ul className="custom-scroll">
                   <button onClick={() => handleAddBlankSlide(0)}>+</button>
-                  {getSlide().map((slide: Slide, index: number) => (
-                    <li className={`choosingSongs_edit_preview_slideList_item ${slide.isChosen ? "activeSongType" : ""}`}
-                      key={index}
-                      onClick={() => handleChosenSlide(slide)}>
-                      {slide.content.text}
-                    </li>
-                  ))}
-                  <button onClick={() => handleAddBlankSlide(getSlide().length)}>+</button>
+                  {slidesData.map((item: SongType | ImageType, index: number) => {
+                    if ('slides' in item) {
+                      // Handle SongType
+                      return item.slides.map((slide, slideIndex) => (
+                        <li 
+                          className="choosingSongs_edit_preview_slideList_item"
+                          key={`${index}-${slideIndex}`}
+                          onClick={() => handleChosenSlide(slide)}
+                        >
+                          {slide.content.text}
+                        </li>
+                      ));
+                    } else {
+                      // Handle ImageType
+                      return (
+                        <li 
+                          className="choosingSongs_edit_preview_slideList_item"
+                          key={index}
+                        >
+                          {item.name || 'Image Slide'}
+                        </li>
+                      );
+                    }
+                  })}
+                  <button onClick={() => handleAddBlankSlide(slidesData.length)}>+</button>
                 </ul>
               </div>
             </div>
