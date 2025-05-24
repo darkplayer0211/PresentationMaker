@@ -10,38 +10,35 @@ import { v4 as uuidv4 } from 'uuid';
 interface ChoosingSongsProps { } // Define your props interface if needed
 
 const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
-  const initSongs: Array<SongType> = JSON.parse(JSON.stringify(listSong));
-  const initSlide: Slide = {
-    slideNum: 0,
-    isBlankPage: true,
-    isChosen: false,
-    title: {
-      text: "",
-      fontName: "",
-      fontSize: 0
-    },
-    content: {
-      text: "",
-      fontName: "",
-      fontSize: 0
-    }
-  };
-  const [resultsongs, setResultsongs] = useState<SongType[]>([]);
+  const { songs, searchSong } = songsStore;
+  const { data: slidesData, getSongSlides, addItem, removeItem } = slidesStore;
+  const [resultsongs, setResultsongs] = useState<SongType[]>(songs);
+  const [chosenSlide, setChosenSlide] = useState<string>();
 
   const handleBack = () => {
     window.history.back();
   };
 
-  const { songs, searchSong } = songsStore;
-  const { data: slidesData, getSongSlides, addItem } = slidesStore;
-
   const handleAddBlankSlide = (position: number) => {
-    const newImageSlide: ImageType = {
+    const newSong = new SongType({
       id: uuidv4(),
-      name: "",
-      image: ""
-    };
-    addItem(newImageSlide);
+      fileName: "",
+      chosen: false,
+      slides: [{
+        slideNum: 0,
+        title: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
+        },
+        content: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
+        },
+      }]
+    });
+    addItem(newSong, position);
   }
 
   /**
@@ -50,7 +47,11 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
    * @param e - The HTMLButtonElement event
    */
   const handleChonsenSong = (song: SongType) => {
-    
+    if (chosenSlide) {
+      console.log(chosenSlide);
+      removeItem(chosenSlide);
+      addItem(song, slidesData.length);
+    }
   };
 
   /**
@@ -60,6 +61,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
    */
   const handleCancleChosen = (song: SongType, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    removeItem(song.id);
   };
 
   /**
@@ -72,8 +74,14 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
     setResultsongs(result);
   }
 
-  const handleChosenSlide = (slide: Slide) => {
+  const handleChosenSlide = (slideId: string) => {
+    console.log(slideId);
+    setChosenSlide(slideId);
   }
+
+  useEffect(() => {
+    setResultsongs(songs);
+  }, [songs]);
 
   return (
     <DefaultLayout>
@@ -119,9 +127,9 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                       // Handle SongType
                       return item.slides.map((slide, slideIndex) => (
                         <li 
-                          className="choosingSongs_edit_preview_slideList_item"
+                          className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
                           key={`${index}-${slideIndex}`}
-                          onClick={() => handleChosenSlide(slide)}
+                          onClick={() => handleChosenSlide(item.id)}
                         >
                           {slide.content.text}
                         </li>
@@ -130,8 +138,9 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                       // Handle ImageType
                       return (
                         <li 
-                          className="choosingSongs_edit_preview_slideList_item"
+                          className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
                           key={index}
+                          onClick={() => handleChosenSlide(item.id)}
                         >
                           {item.name || 'Image Slide'}
                         </li>

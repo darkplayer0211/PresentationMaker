@@ -19,15 +19,15 @@ export interface Slide {
     };
 }
 
-export class SlideType {
+export class SlidesStoreType {
     data: (SongType | ImageType)[] = [];
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    addItem = (item: SongType | ImageType) => {
-        this.data.push(item);
+    addItem = (item: SongType | ImageType, position: number) => {
+        this.data.splice(position, 0, item);
     };
 
     removeItem = (id: string) => {
@@ -40,5 +40,5 @@ export class SlideType {
 
 }
 
-const slidesStore = new SlideType();
+const slidesStore = new SlidesStoreType();
 export default slidesStore;
