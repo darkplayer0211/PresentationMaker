@@ -26,8 +26,12 @@ export class SlidesStoreType {
         makeAutoObservable(this);
     }
 
-    addItem = (item: SongType | ImageType, position: number) => {
-        this.data.splice(position, 0, item);
+    addItem = (itemSelected: SongType | ImageType, position: number) => {
+        const exists = this.data.some(item => item.id === itemSelected.id);
+        if (exists) {
+            return
+        }
+        this.data.splice(position, 0, itemSelected);
     };
 
     removeItem = (id: string) => {

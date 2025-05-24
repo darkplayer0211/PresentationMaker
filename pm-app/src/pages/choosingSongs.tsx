@@ -81,11 +81,12 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
   }
 
   const handleChosenSlide = (slideId: string) => {
-    console.log(slideId);
     setChosenSlide(slideId);
     resultsongs.forEach((song: SongType) => {
       if (slideId === song.id) {
         song.setShowCancelBtn(true);
+      } else {
+        song.setShowCancelBtn(false);
       }
     });
   }
