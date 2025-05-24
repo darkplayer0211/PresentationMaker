@@ -216,6 +216,11 @@
 .choosingSongs_edit_preview_slideList_item {
     border: #555 1px solid;
     height: fit-content;
+    min-height: 100px;
+}
+.choosingSongs_edit_preview_slideList_item:hover {
+    background-color: var(--background);
+    color: var(--highlight-text);
 }
 
 .choosingSongs_preview_buttons {

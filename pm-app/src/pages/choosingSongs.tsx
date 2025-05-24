@@ -11,6 +11,8 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
   const initSongs: Array<SongType> = JSON.parse(JSON.stringify(listSong));
   const initSlide: Slide = {
     slideNum: 0,
+    isBlankPage: true,
+    isChosen: false,
     title: {
       text: "",
       fontName: "",
@@ -29,26 +31,49 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
   };
 
   const { songs, searchSong } = songsStore;
-  const { slides } = slidesStore;
+  const { getSlide, setSlides, addSlide, deleteSlide } = slidesStore;
 
   useEffect(() => {
     const init = async () => {
       songsStore.setSongs(initSongs);
-      slidesStore.setSlides([]);
+      setSlides([initSlide]);
       setResultsongs(songs);
     }
     init();
   }, []);
+
+  const handleAddBlankSlide = (position: number) => {
+    const newSlide: Slide = {
+      slideNum: 0,
+      isBlankPage: true,
+      isChosen: false,
+      title: {
+        text: "",
+        fontName: "",
+        fontSize: 0
+      },
+      content: {
+        text: "",
+        fontName: "",
+        fontSize: 0
+      }
+    };
+    addSlide(newSlide, position);
+  }
 
   /**
    * Handle chosen song, mark the song as selected.
    * @param song - The song to unselect
    * @param e - The HTMLButtonElement event
    */
-  const handleChonsen = (song: SongType) => {
+  const handleChonsenSong = (song: SongType) => {
+    const slideChosenList = getSlide().filter((slide: Slide) => slide.isChosen);
+    if (!slideChosenList.length) {
+      return;
+    }
     song.setIsChosen(true);
     song.getSlides().forEach((slide: Slide, index) => {
-      slidesStore.addSlide(slide, index);
+      addSlide(slide, index);
     });
   };
 
@@ -60,7 +85,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
   const handleCancleChosen = (song: SongType, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     song.setIsChosen(false);
-    slidesStore.getSlide().forEach((slide: Slide) => { slidesStore.deleteSlide(slide.slideNum) });
+    getSlide().forEach((slide: Slide) => { deleteSlide(slide.slideNum) });
   };
 
   /**
@@ -71,6 +96,10 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
   const handleSearchSongs = (value: string) => {
     const result = searchSong(value);
     setResultsongs(result);
+  }
+
+  const handleChosenSlide = (slide: Slide) => {
+    slidesStore.setChosen(slide);
   }
 
   return (
@@ -87,7 +116,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
             <ul className="custom-scroll">
               {resultsongs.map((song: SongType, index: number) => (
                 <div className={`choosingSongs_songList_item ${song.isChosen ? "activeSongType" : ""}`} key={index}
-                  onClick={() => handleChonsen(song)}>
+                  onClick={() => handleChonsenSong(song)}>
                   <li
                     key={index}
                     id={index.toString()}
@@ -111,11 +140,15 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
               <div className="choosingSongs_edit_preview_slide"></div>
               <div className="choosingSongs_edit_preview_slideList">
                 <ul className="custom-scroll">
-                  {slides.map((slide: Slide, index: number) => (
-                    <li className="choosingSongs_edit_preview_slideList_item" key={index}>
+                  <button onClick={() => handleAddBlankSlide(0)}>+</button>
+                  {getSlide().map((slide: Slide, index: number) => (
+                    <li className={`choosingSongs_edit_preview_slideList_item ${slide.isChosen ? "activeSongType" : ""}`}
+                      key={index}
+                      onClick={() => handleChosenSlide(slide)}>
                       {slide.content.text}
                     </li>
                   ))}
+                  <button onClick={() => handleAddBlankSlide(getSlide().length)}>+</button>
                 </ul>
               </div>
             </div>
