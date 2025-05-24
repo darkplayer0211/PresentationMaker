@@ -38,6 +38,12 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
         },
       }]
     });
+    const newImage: ImageType = {
+      id: uuidv4(),
+      type: "image",
+      url: "",
+    };
+    addItem(newImage, position);
     addItem(newSong, position);
   }
 
@@ -142,7 +148,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                           key={index}
                           onClick={() => handleChosenSlide(item.id)}
                         >
-                          {item.name || 'Image Slide'}
+                          {'Image Slide'}
                         </li>
                       );
                     }
