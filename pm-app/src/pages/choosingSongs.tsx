@@ -51,9 +51,16 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
    */
   const handleChonsenSong = (song: SongType) => {
     if (chosenSlide) {
-      console.log(chosenSlide);
+      const pos = slidesData.length;
+      if (pos === 0) {
+        return
+      }
       removeItem(chosenSlide);
+      if (song.chosen) {
+        song.setShowCancelBtn(true);
+      } else {
       song.setIsChosen(true);
+      }
       addItem(song, slidesData.length);
     }
   };
