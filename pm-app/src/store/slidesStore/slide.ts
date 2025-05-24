@@ -4,7 +4,8 @@ import { ImageType } from "../imagesStore";
 import songsStore from "../songsStore";
 
 export interface Slide {
-    slideNum: number;
+    songId: string;
+    id: string;
     isBlankPage?: boolean;
     isChosen?: boolean;
     title: {
