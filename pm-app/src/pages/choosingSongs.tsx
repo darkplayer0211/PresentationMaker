@@ -7,6 +7,7 @@ import listSong from "../database/listSong.json"
 import { Slide } from "../store/slidesStore/slide";
 import { ImageType } from "../store/imagesStore";
 import { v4 as uuidv4 } from 'uuid';
+
 interface ChoosingSongsProps { } // Define your props interface if needed
 
 if ('showOpenFilePicker' in window) {
@@ -16,7 +17,7 @@ if ('showOpenFilePicker' in window) {
   // Fallback for browsers that do not support the API.
 }
 
-async function applyToAll(params:type) {
+async function applyToAll() {
   
 }
 
