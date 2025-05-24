@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 
 interface SongDataType {
   id: string;
-  name: string;
+  fileName: string;
   chosen: boolean;
   slides: SlideType[];
 }
@@ -23,7 +23,7 @@ interface SlideType {
 
 export class SongType {
   id = "";
-  name = "";
+  fileName = "";
   chosen = false;
   slides: SlideType[] = [
     {
@@ -45,7 +45,7 @@ export class SongType {
     makeAutoObservable(this);
     if (song) {
       this.id = song.id;
-      this.name = song.name;
+      this.fileName = song.fileName;
       this.chosen = song.chosen;
       this.slides = song.slides.map((slide) => ({
         slideNum: slide.slideNum,
@@ -57,6 +57,10 @@ export class SongType {
 
   setSlides(slidesData: SlideType[]) {
     this.slides = slidesData;
+  }
+
+  getSlides() {
+    return this.slides;
   }
 
   setIsChosen(data: boolean) {

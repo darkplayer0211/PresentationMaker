@@ -12,10 +12,10 @@ export class Songs {
     this.songs = songs.map((item) => new SongType(item));
   };
 
-  searchSong = (query: string) => {
+  searchSong = (query: string): SongType[] => {
     const result: SongType[] = [];
     this.songs.filter((song: SongType) => {
-      if (song.name.toLowerCase().includes(query.toLowerCase()))
+      if (song.fileName.toLowerCase().includes(query.toLowerCase()))
         result.push(song);
       song.slides.forEach((slide) => {
         if (
