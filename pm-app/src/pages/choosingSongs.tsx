@@ -64,12 +64,15 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
    * @param song - The song to unselect
    * @param e - The HTMLButtonElement event
    */
-  const handleChonsenSong = (song: SongType, position: number) => {
+  const handleChonsenSong = (song: SongType) => {
     if (chosenSlide) {
-      removeItem(chosenSlide);
-      const newSong = {...song, songId: song.id, id: uuidv4()} as SongSlideType;
-      song.setIsChosen(true);
-      addItem(newSong, position);
+      const position = slidesData.findIndex(slide => slide.id === chosenSlide);
+      if (position !== -1) {
+        removeItem(chosenSlide);
+        const newSong = {...song, songId: song.id, id: uuidv4()} as SongSlideType;
+        song.setIsChosen(true);
+        addItem(newSong, position);
+      }
     }
   };
 
@@ -96,9 +99,10 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
   }
 
   const handleChosenSlide = (slideId: string) => {
+    const chosenSlideData = slidesData.find(slide => slide.id === slideId);
     setChosenSlide(slideId);
     resultsongs.forEach((song: SongType) => {
-      if (slideId === song.id) {
+      if (chosenSlideData && 'songId' in chosenSlideData && chosenSlideData.songId === song.id) {
         song.setShowCancelBtn(true);
       } else {
         song.setShowCancelBtn(false);
