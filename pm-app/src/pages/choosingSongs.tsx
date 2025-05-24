@@ -7,6 +7,7 @@ import listSong from "../database/listSong.json"
 import { Slide } from "../store/slidesStore/slide";
 import { ImageType } from "../store/imagesStore";
 import { v4 as uuidv4 } from 'uuid';
+import song, { SongDataType } from "../store/songsStore/song";
 interface ChoosingSongsProps { } // Define your props interface if needed
 
 const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
@@ -24,7 +25,9 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
       id: uuidv4(),
       fileName: "",
       chosen: false,
+      showCancelBtn: false,
       slides: [{
+        id: "",
         slideNum: 0,
         title: {
           text: "",
@@ -35,7 +38,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
           text: "",
           fontName: "",
           fontSize: 0,
-        },
+        }
       }]
     });
     addItem(newSong, position);
@@ -50,6 +53,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
     if (chosenSlide) {
       console.log(chosenSlide);
       removeItem(chosenSlide);
+      song.setIsChosen(true);
       addItem(song, slidesData.length);
     }
   };
@@ -62,6 +66,8 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
   const handleCancleChosen = (song: SongType, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     removeItem(song.id);
+    song.setShowCancelBtn(false);
+    song.setIsChosen(false);
   };
 
   /**
@@ -77,6 +83,11 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
   const handleChosenSlide = (slideId: string) => {
     console.log(slideId);
     setChosenSlide(slideId);
+    resultsongs.forEach((song: SongType) => {
+      if (slideId === song.id) {
+        song.setShowCancelBtn(true);
+      }
+    });
   }
 
   useEffect(() => {
@@ -95,16 +106,16 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
               placeholder="Tìm bài hát"
             />
             <ul className="custom-scroll">
-              {resultsongs.map((song: SongType, index: number) => (
-                <div className={`choosingSongs_songList_item ${song.isChosen ? "activeSongType" : ""}`} key={index}
+              {resultsongs.map((song: SongType) => (
+                <div className={`choosingSongs_songList_item ${song.isChosen ? "activeSongType" : ""}`} key={song.id}
                   onClick={() => handleChonsenSong(song)}>
                   <li
-                    key={index}
-                    id={index.toString()}
+                    key={song.id}
+                    id={`song-${song.id.toString()}`}
                   >
                     Tên: {song.fileName}
                   </li>
-                  {song.isChosen && (
+                  {song.showCancelBtn && (
                     <div className="choosingSongs_songList_item_chosen">
                       <button
                         onClick={(e) => handleCancleChosen(song, e)}>
@@ -126,7 +137,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                     if ('slides' in item) {
                       // Handle SongType
                       return item.slides.map((slide, slideIndex) => (
-                        <li 
+                        <li
                           className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
                           key={`${index}-${slideIndex}`}
                           onClick={() => handleChosenSlide(item.id)}
@@ -137,7 +148,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                     } else {
                       // Handle ImageType
                       return (
-                        <li 
+                        <li
                           className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
                           key={index}
                           onClick={() => handleChosenSlide(item.id)}
