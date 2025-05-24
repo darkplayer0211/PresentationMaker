@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import "../css/pages/choosingSongs.css";
 import DefaultLayout from "../layouts/defaultLayout";
 import { observer } from "mobx-react";
-import { slidesStore, songsStore, SongType } from "../store";
-import listSong from "../database/listSong.json"
-import { Slide } from "../store/slidesStore/slide";
+import { slidesStore, songsStore, SongType, SongSlideType, ImageSlideType } from "../store";
 import { ImageType } from "../store/imagesStore";
 import { v4 as uuidv4 } from 'uuid';
 interface ChoosingSongsProps { } // Define your props interface if needed
@@ -38,13 +36,24 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
         },
       }]
     });
-    const newImage: ImageType = {
+    const songSlide = Object.assign(newSong, { songId: newSong.id });
+    const newImage: ImageSlideType = {
       id: uuidv4(),
       type: "image",
       url: "",
+      imageId: uuidv4(),
     };
-    addItem(newImage, position);
-    addItem(newSong, position);
+
+    const prevSlide = position > 0 ? slidesData[position - 1] : null;
+    if (prevSlide && 'slides' in prevSlide) {
+      // If previous slide is SongType, add image first
+      addItem(newImage, position);
+      addItem(songSlide, position + 1);
+    } else {
+      // If previous slide is ImageType or no previous slide, add song first
+      addItem(songSlide, position);
+      addItem(newImage, position + 1);
+    }
   }
 
   /**
@@ -52,11 +61,11 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
    * @param song - The song to unselect
    * @param e - The HTMLButtonElement event
    */
-  const handleChonsenSong = (song: SongType) => {
+  const handleChonsenSong = (song: SongType, position: number) => {
     if (chosenSlide) {
-      console.log(chosenSlide);
       removeItem(chosenSlide);
-      addItem(song, slidesData.length);
+      const newSong = {...song, songId: song.id, id: uuidv4()} as SongSlideType;
+      addItem(newSong, position);
     }
   };
 
@@ -103,7 +112,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
             <ul className="custom-scroll">
               {resultsongs.map((song: SongType, index: number) => (
                 <div className={`choosingSongs_songList_item ${song.isChosen ? "activeSongType" : ""}`} key={index}
-                  onClick={() => handleChonsenSong(song)}>
+                  onClick={() => handleChonsenSong(song, index)}>
                   <li
                     key={index}
                     id={index.toString()}
@@ -131,29 +140,36 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                   {slidesData.map((item: SongType | ImageType, index: number) => {
                     if ('slides' in item) {
                       // Handle SongType
-                      return item.slides.map((slide, slideIndex) => (
-                        <li 
-                          className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
-                          key={`${index}-${slideIndex}`}
-                          onClick={() => handleChosenSlide(item.id)}
-                        >
-                          {slide.content.text}
-                        </li>
-                      ));
+                      return (
+                        <>
+                          {item.slides.map((slide, slideIndex) => (
+                            <li 
+                              className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
+                              key={`${index}-${slideIndex}`}
+                              onClick={() => handleChosenSlide(item.id)}
+                            >
+                              {slide.content.text}
+                            </li>
+                          ))}
+                          <button onClick={() => handleAddBlankSlide(index + 1)}>+</button>
+                        </>
+                      );
                     } else {
                       // Handle ImageType
                       return (
-                        <li 
-                          className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
-                          key={index}
-                          onClick={() => handleChosenSlide(item.id)}
-                        >
-                          {'Image Slide'}
-                        </li>
+                        <>
+                          <li 
+                            className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
+                            key={index}
+                            onClick={() => handleChosenSlide(item.id)}
+                          >
+                            {'Image Slide'}
+                          </li>
+                          <button onClick={() => handleAddBlankSlide(index + 1)}>+</button>
+                        </>
                       );
                     }
                   })}
-                  <button onClick={() => handleAddBlankSlide(slidesData.length)}>+</button>
                 </ul>
               </div>
             </div>

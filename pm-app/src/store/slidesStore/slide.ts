@@ -19,14 +19,22 @@ export interface Slide {
     };
 }
 
+export interface SongSlideType extends SongType {
+    songId: string;
+}
+
+export interface ImageSlideType extends ImageType {
+    imageId: string;
+}
+
 export class SlidesStoreType {
-    data: (SongType | ImageType)[] = [];
+    data: (SongSlideType | ImageSlideType)[] = [];
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    addItem = (item: SongType | ImageType, position: number) => {
+    addItem = (item: SongSlideType | ImageSlideType, position: number) => {
         this.data.splice(position, 0, item);
     };
 
