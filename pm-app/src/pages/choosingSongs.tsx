@@ -16,40 +16,11 @@ if ('showOpenFilePicker' in window) {
   // Fallback for browsers that do not support the API.
 }
 
+async function applyToAll(params:type) {
+  
+}
+
 async function openFile() {
-  console.log('fileInput function');
-  // Main logic after file is selected
-  const fileInput = document.getElementById('file-input') as HTMLInputElement;
-  fileInput.click();
-
-  fileInput.onchange = async () => {
-    const file = fileInput.files?.[0];
-    if (!file) return;
-
-    const imageUrl = URL.createObjectURL(file);
-
-    const imgElement = document.createElement('img');
-    imgElement.src = imageUrl;
-    imgElement.alt = 'Selected Image';
-    imgElement.style.maxWidth = '100%';
-    imgElement.style.cursor = 'pointer';
-    imgElement.title = 'Click to re-upload';
-
-    // When image is clicked, re-trigger file input
-    imgElement.onclick = () => fileInput.click();
-
-    const button = document.getElementById('replace-button');
-    if (button && button.parentNode) {
-      button.parentNode.replaceChild(imgElement, button);
-    } else {
-      // Replace existing image
-      const existingImg = document.querySelector('img');
-      if (existingImg && existingImg.parentNode) {
-        existingImg.parentNode.replaceChild(imgElement, existingImg);
-      }
-    }
-  };
-
   try {
     // Open the file picker.
     const [fileHandle] = await window.showOpenFilePicker({
@@ -87,17 +58,28 @@ async function readFile(fileHandle: FileSystemFileHandle) {
     // Optionally, you can create an image element to display the file.
     const imgElement = document.createElement('img');
     imgElement.src = imageUrl;
+
+    imgElement.style.maxWidth = '100%';
+    imgElement.style.cursor = 'pointer';
+    imgElement.title = 'Click to re-upload';
+
+    // When image is clicked, re-trigger file input
+    imgElement.onclick = () => openFile();
     imgElement.alt = 'Selected Image';
     imgElement.style.width = '100px'; // Set width for the image
     imgElement.style.height = '100px'; // Set height for the image
     imgElement.style.objectFit = 'cover'; // Maintain aspect ratio
 
     const button = document.getElementById('replace-button');
-
-    if (button && button.parentNode) {
-      button.parentNode.replaceChild(imgElement, button);
-    }
-    
+      if (button && button.parentNode) {
+        button.parentNode.replaceChild(imgElement, button);
+      } else {
+        // Replace existing image
+        const existingImg = document.querySelector('img');
+        if (existingImg && existingImg.parentNode) {
+          existingImg.parentNode.replaceChild(imgElement, existingImg);
+        }
+      }
   } catch (err) {
     console.error('Error reading file:', err);
   }
@@ -159,7 +141,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
    * @param song - The song to unselect
    * @param e - The HTMLButtonElement event
    */
-  const handleCancleChosen = (song: SongType, e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCancelChosen = (song: SongType, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     removeItem(song.id);
   };
@@ -207,7 +189,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                   {song.isChosen && (
                     <div className="choosingSongs_songList_item_chosen">
                       <button
-                        onClick={(e) => handleCancleChosen(song, e)}>
+                        onClick={(e) => handleCancelChosen(song, e)}>
                         Bỏ chọn
                       </button>
                     </div>)
@@ -247,6 +229,10 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                       );
                     }
                   })}
+
+                  <button id='replace-button' onClick={openFile}>Open File</button>
+                  <button id='replace-all-button' onClick={applyToAll}>Apply to all</button>
+                  
                   <button onClick={() => handleAddBlankSlide(slidesData.length)}>+</button>
                 </ul>
               </div>
@@ -262,9 +248,6 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
               >
                 Trở về
               </button>
-
-              <input type="hidden" id="file-input" />
-              <button id='replace-button' onClick={openFile}>Open File</button>
             </div>
           </div>
         </div>
