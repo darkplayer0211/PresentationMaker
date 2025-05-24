@@ -69,7 +69,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
       const position = slidesData.findIndex(slide => slide.id === chosenSlide);
       if (position !== -1) {
         removeItem(chosenSlide);
-        const newSong = {...song, songId: song.id, id: uuidv4()} as SongSlideType;
+        const newSong = { ...song, songId: song.id, id: uuidv4() } as SongSlideType;
         song.setIsChosen(true);
         addItem(newSong, position);
       }
@@ -81,11 +81,18 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
    * @param song - The song to unselect
    * @param e - The HTMLButtonElement event
    */
-  const handleCancleChosen = (song: SongType, e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCancleChosen = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    removeItem(song.id);
-    song.setShowCancelBtn(false);
-    song.setIsChosen(false);
+    const chosenSlideData = slidesData.find(slide => slide.id === chosenSlide) as SongSlideType;
+    removeItem(chosenSlide || "");
+    resultsongs.forEach((song: SongType) => {
+      if (song.id === chosenSlideData?.songId) {
+        song.setIsChosen(false);
+        song.setShowCancelBtn(false);
+      } else {
+        song.setShowCancelBtn(false);
+      }
+    });
   };
 
   /**
@@ -99,10 +106,11 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
   }
 
   const handleChosenSlide = (slideId: string) => {
-    const chosenSlideData = slidesData.find(slide => slide.id === slideId);
+    const chosenSlideData = slidesData.find(slide => slide.id === slideId) as SongSlideType;
     setChosenSlide(slideId);
     resultsongs.forEach((song: SongType) => {
-      if (chosenSlideData && 'songId' in chosenSlideData && chosenSlideData.songId === song.id) {
+      if (song.id === chosenSlideData?.songId) {
+        song.setIsChosen(true);
         song.setShowCancelBtn(true);
       } else {
         song.setShowCancelBtn(false);
@@ -138,7 +146,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                   {song.showCancelBtn && (
                     <div className="choosingSongs_songList_item_chosen">
                       <button
-                        onClick={(e) => handleCancleChosen(song, e)}>
+                        onClick={(e) => handleCancleChosen(e)}>
                         Bỏ chọn
                       </button>
                     </div>)
@@ -159,7 +167,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                       return (
                         <>
                           {item.slides.map((slide, slideIndex) => (
-                            <li 
+                            <li
                               className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
                               key={`${index}-${slideIndex}`}
                               onClick={() => handleChosenSlide(item.id)}
@@ -174,7 +182,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                       // Handle ImageType
                       return (
                         <>
-                          <li 
+                          <li
                             className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
                             key={index}
                             onClick={() => handleChosenSlide(item.id)}
