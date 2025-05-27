@@ -67,8 +67,8 @@ async function readFile(fileHandle: FileSystemFileHandle) {
     // When image is clicked, re-trigger file input
     imgElement.onclick = () => openFile();
     imgElement.alt = 'Selected Image';
-    imgElement.style.width = '100px'; // Set width for the image
-    imgElement.style.height = '100px'; // Set height for the image
+    imgElement.style.width = '300px'; // Set width for the image
+    imgElement.style.height = '300px'; // Set height for the image
     imgElement.style.objectFit = 'cover'; // Maintain aspect ratio
 
     const button = document.getElementById('replace-button');
