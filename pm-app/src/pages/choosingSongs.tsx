@@ -8,6 +8,12 @@ import { Slide } from "../store/slidesStore/slide";
 import { ImageType } from "../store/imagesStore";
 import { v4 as uuidv4 } from 'uuid';
 
+declare global {
+  interface Window {
+    showOpenFilePicker?: (options?: any) => Promise<any>;
+  }
+}
+
 interface ChoosingSongsProps { } // Define your props interface if needed
 
 if ('showOpenFilePicker' in window) {
@@ -15,6 +21,7 @@ if ('showOpenFilePicker' in window) {
   console.log("File System Access API is supported.");
 } else {
   // Fallback for browsers that do not support the API.
+  console.log("File System Access API is not supported.");
 }
 
 async function applyToAll() {
@@ -96,7 +103,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
     window.history.back();
   };
 
-  const handleAddBlankSlide = (position: number) => {
+  const handleAddBlankSlide = (position: number) => {     
     const newSong = new SongType({
       id: uuidv4(),
       fileName: "",
@@ -122,6 +129,21 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
     };
     addItem(newImage, position);
     addItem(newSong, position);
+  }
+
+  /**
+   * Handle applying changes to all slides.
+   */
+  const applyToAll = (slideId: string) => {
+    if (slideId) {
+      const slides = getSongSlides(slideId);
+      if (slides) {
+        slides.forEach((slide: Slide) => {
+          slide.content.text = "New Content"; // Example change
+          slide.title.text = "New Title"; // Example change
+        });
+      }
+    }
   }
 
   /**
@@ -223,16 +245,16 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                         <li 
                           className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
                           key={index}
-                          onClick={() => handleChosenSlide(item.id)}
+                          onClick={() => openFile()}
                         >
                           {'Image Slide'}
                         </li>
                       );
                     }
                   })}
-
-                  <button id='replace-button' onClick={openFile}>Open File</button>
-                  <button id='replace-all-button' onClick={applyToAll}>Apply to all</button>
+                  
+                  <button id='replace-button' onClick={() => openFile()}>Replace Image</button>
+                  <button id='replace-all-button' onClick={applyToAll(addItem.id)}>Apply to all</button>
                   
                   <button onClick={() => handleAddBlankSlide(slidesData.length)}>+</button>
                 </ul>

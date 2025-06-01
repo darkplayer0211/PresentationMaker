@@ -38,6 +38,10 @@ export class SlidesStoreType {
         return songsStore.songs.find((song) => song.id === id)?.slides;
     };
 
+    getImageSlides = (id: string) => {
+        return this.data.find((item) => item.id === id && item.type === "image") as ImageType | undefined;
+    }
+
 }
 
 const slidesStore = new SlidesStoreType();
