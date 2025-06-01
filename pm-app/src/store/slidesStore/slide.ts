@@ -46,6 +46,12 @@ export class SlidesStoreType {
         return songsStore.songs.find((song) => song.id === id)?.slides;
     };
 
+    updateImageUrl = (id: string, url: string) => {
+        const imageSlide = this.data.find(item => item.id === id);
+        if (imageSlide && 'url' in imageSlide) {
+            imageSlide.url = url;
+        }
+    };
 }
 
 const slidesStore = new SlidesStoreType();

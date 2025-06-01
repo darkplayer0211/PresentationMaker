@@ -110,6 +110,28 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
     });
   }
 
+  const chooseImage = (index: number) => {
+    const input = document.getElementById(`image-${index}`) as HTMLInputElement;
+    input.click();
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageUrl = e.target?.result as string;
+        const slideId = slidesData[index].id;
+        slidesStore.updateImageUrl(slideId, imageUrl);
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+
+  const applyImageToAll = (index: number) => {
+    console.log(index);
+  }
+
   useEffect(() => {
     setResultsongs(songs);
   }, [songs]);
@@ -179,7 +201,15 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                             key={index}
                             onClick={() => handleChosenSlide(item.id)}
                           >
-                            {'Image Slide'}
+                            {item.url && <img src={item.url} alt="ảnh" />}
+                            {!item.url && <div className="choosingSongs_edit_preview_slideList_item_noImage">
+                              <p>Không có ảnh</p>
+                            </div>}
+                            {chosenSlide === item.id && item.type === 'image' && <div className="choosingSongs_edit_preview_slideList_item_buttons">
+                              <button onClick={() => chooseImage(index)}>Chọn ảnh</button>
+                              <button onClick={() => applyImageToAll(index)}>Áp dụng tất cả</button>
+                              <input id={`image-${index}`} type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageChange(e, index)}/>
+                            </div>}
                           </li>
                           <button onClick={() => handleAddBlankSlide(index + 1)}>+</button>
                         </>
