@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import song, { SongType } from "../songsStore/song";
+import { SongType } from "../songsStore/song";
 import { ImageType } from "../imagesStore";
 import songsStore from "../songsStore";
 

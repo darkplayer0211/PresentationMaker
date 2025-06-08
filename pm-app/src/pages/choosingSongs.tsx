@@ -5,12 +5,10 @@ import { observer } from "mobx-react";
 import { slidesStore, songsStore, SongType, SongSlideType, ImageSlideType } from "../store";
 import { ImageType } from "../store/imagesStore";
 import { v4 as uuidv4 } from 'uuid';
-import song, { SongDataType } from "../store/songsStore/song";
-interface ChoosingSongsProps { } // Define your props interface if needed
 
-const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
+const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   const { songs, searchSong } = songsStore;
-  const { data: slidesData, getSongSlides, addItem, removeItem } = slidesStore;
+  const { data: slidesData, addItem, removeItem } = slidesStore;
   const [resultsongs, setResultsongs] = useState<SongType[]>(songs);
   const [chosenSlide, setChosenSlide] = useState<string>();
 
@@ -125,6 +123,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
         slidesStore.updateImageUrl(slideId, imageUrl);
       }
       reader.readAsDataURL(file);
+      setChosenSlide(undefined);
     }
   }
 
