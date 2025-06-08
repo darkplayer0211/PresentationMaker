@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import song, { SongType } from "../songsStore/song";
+import { SongType } from "../songsStore/song";
 import { ImageType } from "../imagesStore";
 import songsStore from "../songsStore";
 
@@ -46,6 +46,12 @@ export class SlidesStoreType {
         return songsStore.songs.find((song) => song.id === id)?.slides;
     };
 
+    updateImageUrl = (id: string, url: string) => {
+        const imageSlide = this.data.find(item => item.id === id);
+        if (imageSlide && 'url' in imageSlide) {
+            imageSlide.url = url;
+        }
+    };
 }
 
 const slidesStore = new SlidesStoreType();

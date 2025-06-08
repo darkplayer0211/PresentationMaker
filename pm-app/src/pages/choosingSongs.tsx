@@ -5,20 +5,23 @@ import { observer } from "mobx-react";
 import { slidesStore, songsStore, SongType, SongSlideType, ImageSlideType } from "../store";
 import { ImageType } from "../store/imagesStore";
 import { v4 as uuidv4 } from 'uuid';
-import song, { SongDataType } from "../store/songsStore/song";
-interface ChoosingSongsProps { } // Define your props interface if needed
+import { TrashCan } from "../icons/trashCan";
+import { ConfirmModal } from "../components/ConfirmModal";
 
-const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
+const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   const { songs, searchSong } = songsStore;
-  const { data: slidesData, getSongSlides, addItem, removeItem } = slidesStore;
+  const { data: slidesData, addItem, removeItem } = slidesStore;
   const [resultsongs, setResultsongs] = useState<SongType[]>(songs);
   const [chosenSlide, setChosenSlide] = useState<string>();
+  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+  const [chosenSong, setChosenSong] = useState<SongType>();
 
   const handleBack = () => {
     window.history.back();
   };
 
   const handleAddBlankSlide = (position: number) => {
+    setShowConfirmModal(true);
     const newSong = new SongType({
       id: uuidv4(),
       fileName: "",
@@ -104,6 +107,11 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
     const result = searchSong(value);
     setResultsongs(result);
   }
+  
+  const handleSongClick = (song: SongType) => {
+    setChosenSong(song);
+    setShowConfirmModal(true);
+  }
 
   const handleChosenSlide = (slideId: string) => {
     const chosenSlideData = slidesData.find(slide => slide.id === slideId) as SongSlideType;
@@ -116,6 +124,45 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
         song.setShowCancelBtn(false);
       }
     });
+  }
+
+  const chooseImage = (index: number) => {
+    const input = document.getElementById(`image-${index}`) as HTMLInputElement;
+    input.click();
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageUrl = e.target?.result as string;
+        const slideId = slidesData[index].id;
+        slidesStore.updateImageUrl(slideId, imageUrl);
+      }
+      reader.readAsDataURL(file);
+      setChosenSlide(undefined);
+    }
+  }
+
+  const applyImageToAll = (index: number) => {
+    console.log(index);
+  }
+
+  const handleDeleteSlide = (slideId: string, e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    removeItem(slideId);
+  }
+
+  const onConfirm = () => {
+    if (chosenSong) {
+      handleChonsenSong(chosenSong);
+    }
+    setShowConfirmModal(false);
+  }
+
+  const onCancel = () => {
+    setShowConfirmModal(false);
   }
 
   useEffect(() => {
@@ -136,7 +183,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
             <ul className="custom-scroll">
               {resultsongs.map((song: SongType) => (
                 <div className={`choosingSongs_songList_item ${song.isChosen ? "activeSongType" : ""}`} key={song.id}
-                  onClick={() => handleChonsenSong(song)}>
+                  onClick={() => handleSongClick(song)}>
                   <li
                     key={song.id}
                     id={`song-${song.id.toString()}`}
@@ -172,6 +219,9 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                               key={`${index}-${slideIndex}`}
                               onClick={() => handleChosenSlide(item.id)}
                             >
+                              <div className="choosingSongs_edit_preview_slideList_item_delete">
+                                <button onClick={(e) => handleDeleteSlide(item.id, e)}><TrashCan width={16} height={16}/></button>
+                              </div>
                               {slide.content.text}
                             </li>
                           ))}
@@ -187,7 +237,18 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                             key={index}
                             onClick={() => handleChosenSlide(item.id)}
                           >
-                            {'Image Slide'}
+                            {item.url && <img src={item.url} alt="ảnh" />}
+                            {!item.url && <div className="choosingSongs_edit_preview_slideList_item_noImage">
+                              <p>Không có ảnh</p>
+                            </div>}
+                              <div className="choosingSongs_edit_preview_slideList_item_delete">
+                                <button onClick={(e) => handleDeleteSlide(item.id, e)}><TrashCan width={16} height={16}/></button>
+                              </div>
+                            {chosenSlide === item.id && item.type === 'image' && <div className="choosingSongs_edit_preview_slideList_item_buttons">
+                              <button onClick={() => chooseImage(index)}>Chọn ảnh</button>
+                              <button onClick={() => applyImageToAll(index)}>Áp dụng tất cả</button>
+                              <input id={`image-${index}`} type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageChange(e, index)}/>
+                            </div>}
                           </li>
                           <button onClick={() => handleAddBlankSlide(index + 1)}>+</button>
                         </>
@@ -211,6 +272,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
           </div>
         </div>
       </div>
+      {showConfirmModal && <ConfirmModal onConfirm={onConfirm} onCancel={onCancel} />}
     </DefaultLayout>
   );
 });

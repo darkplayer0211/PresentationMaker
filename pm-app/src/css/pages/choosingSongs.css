@@ -50,6 +50,7 @@
     border-radius: 10px;
     cursor: pointer;
     background-color: var(--background);
+    width: 100%;
 }
 
 .choosingSongs_songList ul li {
@@ -96,48 +97,20 @@
     margin: 0;
     flex-grow: 1;
     flex-basis: 0;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    max-height: 565px;
+    align-items: center;
+    justify-content: start;
+    gap: 12px;
     overflow-y: auto;
-    scrollbar-color: #888 #f0f0f0;
-    scrollbar-width: auto;
-    padding: 10px;         /* Cách nội dung khỏi scrollbar */
-    box-sizing: content-box;    /* Đảm bảo padding không bị tràn */
+    padding: 12px 0 12px 0;
 }
 
 /* Webkit (Chrome, Edge, Safari) */
 .custom-scroll::-webkit-scrollbar {
-    width: 16px; /* giữ nguyên mặc định để hiển thị mũi tên */
+    display: none;
 }
-
-.custom-scroll::-webkit-scrollbar-track {
-    background: #f0f0f0;
-}
-
-.custom-scroll::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 8px;
-    border: 4px solid #f0f0f0; /* tạo khoảng cách với track */
-}
-
-.custom-scroll::-webkit-scrollbar-thumb:hover {
-    background-color: #555;
-}
-
-/* Giữ lại mũi tên cuộn lên/xuống */
-.custom-scroll::-webkit-scrollbar-button {
-    display: block;
-    background-color: #ccc;
-    height: 16px;
-}
-
-/* Hover hiệu ứng cho mũi tên */
-.custom-scroll::-webkit-scrollbar-button:hover {
-    background-color: #aaa;
-}
-/* End Custom scrollbar styles */
 
 .choosingSongs_songList ul li {
     padding: 12px;
@@ -210,19 +183,63 @@
     width: 30%;
     min-height: 20%;
     background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 }
 
 .choosingSongs_edit_preview_slideList_item {
     border: var(--primary) 2px solid;
-    height: fit-content;
-    min-height: 100px;
+    width: 80%;
     border-radius: 8px;
     padding: 8px;
+    aspect-ratio: 16/9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 .choosingSongs_edit_preview_slideList_item:hover {
     background-color: var(--primary);
     color: var(--highlight-text);
 }
+.choosingSongs_edit_preview_slideList_item img {
+    aspect-ratio: 16/9;
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+}
+.choosingSongs_edit_preview_slideList_item_buttons {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+}
+
+.choosingSongs_edit_preview_slideList_item_delete {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+}
+.choosingSongs_edit_preview_slideList_item_delete button {
+    border-radius: 8px;
+    border: none;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background);
+    color: #fff;
+}
+.choosingSongs_edit_preview_slideList_item_delete button:hover {
+    cursor: pointer;
+    color: red;
+    scale: 1.2;
+}
+
 
 .choosingSongs_preview_buttons {
     display: flex;
