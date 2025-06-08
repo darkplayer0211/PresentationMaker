@@ -218,6 +218,29 @@
     transform: translate(50%, -50%);
 }
 
+.choosingSongs_edit_preview_slideList_item_delete {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+}
+.choosingSongs_edit_preview_slideList_item_delete button {
+    border-radius: 8px;
+    border: none;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background);
+    color: #fff;
+}
+.choosingSongs_edit_preview_slideList_item_delete button:hover {
+    cursor: pointer;
+    color: red;
+    scale: 1.2;
+}
+
+
 .choosingSongs_preview_buttons {
     display: flex;
     justify-content: end;

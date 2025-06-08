@@ -5,6 +5,7 @@ import { observer } from "mobx-react";
 import { slidesStore, songsStore, SongType, SongSlideType, ImageSlideType } from "../store";
 import { ImageType } from "../store/imagesStore";
 import { v4 as uuidv4 } from 'uuid';
+import { TrashCan } from "../icons/trashCan";
 
 const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   const { songs, searchSong } = songsStore;
@@ -131,6 +132,11 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
     console.log(index);
   }
 
+  const handleDeleteSlide = (slideId: string, e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    removeItem(slideId);
+  }
+
   useEffect(() => {
     setResultsongs(songs);
   }, [songs]);
@@ -185,6 +191,9 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                               key={`${index}-${slideIndex}`}
                               onClick={() => handleChosenSlide(item.id)}
                             >
+                              <div className="choosingSongs_edit_preview_slideList_item_delete">
+                                <button onClick={(e) => handleDeleteSlide(item.id, e)}><TrashCan width={16} height={16}/></button>
+                              </div>
                               {slide.content.text}
                             </li>
                           ))}
@@ -204,6 +213,9 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                             {!item.url && <div className="choosingSongs_edit_preview_slideList_item_noImage">
                               <p>Không có ảnh</p>
                             </div>}
+                              <div className="choosingSongs_edit_preview_slideList_item_delete">
+                                <button onClick={(e) => handleDeleteSlide(item.id, e)}><TrashCan width={16} height={16}/></button>
+                              </div>
                             {chosenSlide === item.id && item.type === 'image' && <div className="choosingSongs_edit_preview_slideList_item_buttons">
                               <button onClick={() => chooseImage(index)}>Chọn ảnh</button>
                               <button onClick={() => applyImageToAll(index)}>Áp dụng tất cả</button>
