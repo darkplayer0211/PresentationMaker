@@ -67,15 +67,22 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
    * @param song - The song to unselect
    * @param e - The HTMLButtonElement event
    */
-  const handleChonsenSong = (song: SongType) => {
-    if (chosenSlide) {
+  const handleChonsenSong = (chosenSong: SongType) => {
+    if (chosenSlide && chosenSong) {
       const position = slidesData.findIndex(slide => slide.id === chosenSlide);
-      if (position !== -1) {
-        removeItem(chosenSlide);
-        const newSong = { ...song, songId: song.id, id: uuidv4() } as SongSlideType;
-        song.setIsChosen(true);
-        addItem(newSong, position);
-      }
+      resultsongs.forEach((song: SongType) => {
+        if (chosenSong?.id === song.id) {
+          removeItem(chosenSlide);
+          const newSong = { ...song, songId: song.id, id: uuidv4() } as SongSlideType;
+          addItem(newSong, position);
+          song.setIsChosen(true);
+          song.setShowCancelBtn(false);
+
+        } else {
+          song.setIsChosen(false);
+          song.setShowCancelBtn(false);
+        }
+      });
     }
   };
 
@@ -107,7 +114,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
     const result = searchSong(value);
     setResultsongs(result);
   }
-  
+
   const handleSongClick = (song: SongType) => {
     setChosenSong(song);
     setShowConfirmModal(true);
@@ -220,7 +227,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                               onClick={() => handleChosenSlide(item.id)}
                             >
                               <div className="choosingSongs_edit_preview_slideList_item_delete">
-                                <button onClick={(e) => handleDeleteSlide(item.id, e)}><TrashCan width={16} height={16}/></button>
+                                <button onClick={(e) => handleDeleteSlide(item.id, e)}><TrashCan width={16} height={16} /></button>
                               </div>
                               {slide.content.text}
                             </li>
@@ -241,13 +248,13 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                             {!item.url && <div className="choosingSongs_edit_preview_slideList_item_noImage">
                               <p>Không có ảnh</p>
                             </div>}
-                              <div className="choosingSongs_edit_preview_slideList_item_delete">
-                                <button onClick={(e) => handleDeleteSlide(item.id, e)}><TrashCan width={16} height={16}/></button>
-                              </div>
+                            <div className="choosingSongs_edit_preview_slideList_item_delete">
+                              <button onClick={(e) => handleDeleteSlide(item.id, e)}><TrashCan width={16} height={16} /></button>
+                            </div>
                             {chosenSlide === item.id && item.type === 'image' && <div className="choosingSongs_edit_preview_slideList_item_buttons">
                               <button onClick={() => chooseImage(index)}>Chọn ảnh</button>
                               <button onClick={() => applyImageToAll(index)}>Áp dụng tất cả</button>
-                              <input id={`image-${index}`} type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageChange(e, index)}/>
+                              <input id={`image-${index}`} type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageChange(e, index)} />
                             </div>}
                           </li>
                           <button onClick={() => handleAddBlankSlide(index + 1)}>+</button>
