@@ -21,7 +21,6 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   };
 
   const handleAddBlankSlide = (position: number) => {
-    setShowConfirmModal(true);
     const newSong = new SongType({
       id: uuidv4(),
       fileName: "",
