@@ -6,18 +6,22 @@ import { slidesStore, songsStore, SongType, SongSlideType, ImageSlideType } from
 import { ImageType } from "../store/imagesStore";
 import { v4 as uuidv4 } from 'uuid';
 import { TrashCan } from "../icons/trashCan";
+import { ConfirmModal } from "../components/ConfirmModal";
 
 const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   const { songs, searchSong } = songsStore;
   const { data: slidesData, addItem, removeItem } = slidesStore;
   const [resultsongs, setResultsongs] = useState<SongType[]>(songs);
   const [chosenSlide, setChosenSlide] = useState<string>();
+  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+  const [chosenSong, setChosenSong] = useState<SongType>();
 
   const handleBack = () => {
     window.history.back();
   };
 
   const handleAddBlankSlide = (position: number) => {
+    setShowConfirmModal(true);
     const newSong = new SongType({
       id: uuidv4(),
       fileName: "",
@@ -96,6 +100,11 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
     const result = searchSong(value);
     setResultsongs(result);
   }
+  
+  const handleSongClick = (song: SongType) => {
+    setChosenSong(song);
+    setShowConfirmModal(true);
+  }
 
   const handleChosenSlide = (slideId: string) => {
     const chosenSlideData = slidesData.find(slide => slide.id === slideId);
@@ -137,6 +146,17 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
     removeItem(slideId);
   }
 
+  const onConfirm = () => {
+    if (chosenSong) {
+      handleChonsenSong(chosenSong);
+    }
+    setShowConfirmModal(false);
+  }
+
+  const onCancel = () => {
+    setShowConfirmModal(false);
+  }
+
   useEffect(() => {
     setResultsongs(songs);
   }, [songs]);
@@ -155,7 +175,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
             <ul className="custom-scroll">
               {resultsongs.map((song: SongType) => (
                 <div className={`choosingSongs_songList_item ${song.isChosen ? "activeSongType" : ""}`} key={song.id}
-                  onClick={() => handleChonsenSong(song)}>
+                  onClick={() => handleSongClick(song)}>
                   <li
                     key={song.id}
                     id={`song-${song.id.toString()}`}
@@ -244,6 +264,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
           </div>
         </div>
       </div>
+      {showConfirmModal && <ConfirmModal onConfirm={onConfirm} onCancel={onCancel} />}
     </DefaultLayout>
   );
 });
