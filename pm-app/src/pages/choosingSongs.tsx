@@ -16,6 +16,40 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [chosenSong, setChosenSong] = useState<SongType>();
 
+  /**
+   * Initialize a blank slide if there are no slides in the store.
+   */
+  const initBlankSlide = () => {
+    const blankSilde = {
+      songId: "",
+      id: uuidv4(),
+      fileName: "",
+      chosen: false,
+      showCancelBtn: false,
+      slides: [{
+        id: "",
+        slideNum: 0,
+        title: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
+        },
+        content: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
+        }
+      }]
+    } as SongSlideType;
+    if (slidesData.length === 0) {
+      slidesData.push(blankSilde);
+    }
+  }
+
+  useEffect(() => {
+    initBlankSlide();
+  }, []);
+
   const handleBack = () => {
     window.history.back();
   };
