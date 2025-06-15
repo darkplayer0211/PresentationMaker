@@ -142,6 +142,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
       resultsongs.forEach((song: SongType) => {
         if (chosenSong?.id === song.id) {
           removeItem(chosenSlide);
+          setChosenSlide(undefined);
           const newSong = { ...song, songId: song.id, id: uuidv4() } as SongSlideType;
           addItem(newSong, position);
           song.setIsChosen(true);
