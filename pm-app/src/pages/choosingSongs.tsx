@@ -20,6 +20,11 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
     window.history.back();
   };
 
+  /**
+   * Add blank slide and image slide.
+   *
+   * @param position - positon of slide 
+   */
   const handleAddBlankSlide = (position: number) => {
     setShowConfirmModal(true);
     const newSong = new SongType({
@@ -63,6 +68,36 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   }
 
   /**
+   * Add only blank slide.
+   *
+   * @param position - positon of slide
+   */
+  const handleAddOnlyBlankSlide = (position: number) => {
+    const newSong = new SongType({
+      id: uuidv4(),
+      fileName: "",
+      chosen: false,
+      showCancelBtn: false,
+      slides: [{
+        id: "",
+        slideNum: 0,
+        title: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
+        },
+        content: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
+        }
+      }]
+    });
+    const songSlide = Object.assign(newSong, { songId: newSong.id });
+    addItem(songSlide, position);
+  }
+
+  /**
    * Handle chosen song, mark the song as selected.
    * @param song - The song to unselect
    * @param e - The HTMLButtonElement event
@@ -94,6 +129,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   const handleCancleChosen = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     const chosenSlideData = slidesData.find(slide => slide.id === chosenSlide) as SongSlideType;
+    const positionSlide = slidesData.findIndex(slide => slide.id === chosenSlide);
     removeItem(chosenSlide || "");
     resultsongs.forEach((song: SongType) => {
       if (song.id === chosenSlideData?.songId) {
@@ -103,6 +139,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
         song.setShowCancelBtn(false);
       }
     });
+    handleAddOnlyBlankSlide(positionSlide);
   };
 
   /**
@@ -115,11 +152,22 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
     setResultsongs(result);
   }
 
+  /**
+   * Handle clicking on a song to select it.
+   *
+   * @param song - The song to select
+   */
   const handleSongClick = (song: SongType) => {
-    setChosenSong(song);
-    setShowConfirmModal(true);
+    // setChosenSong(song);
+    // setShowConfirmModal(true);
+    handleChonsenSong(song);
   }
 
+  /**
+   * Handle choosing a slide by its ID.
+   *
+   * @param slideId - The ID of the slide to choose
+   */
   const handleChosenSlide = (slideId: string) => {
     const chosenSlideData = slidesData.find(slide => slide.id === slideId) as SongSlideType;
     setChosenSlide(slideId);
@@ -133,11 +181,22 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
     });
   }
 
+  /**
+   * Choose an image by its index.
+   *
+   * @param index - Index of slide
+   */
   const chooseImage = (index: number) => {
     const input = document.getElementById(`image-${index}`) as HTMLInputElement;
     input.click();
   }
 
+  /**
+   * Handle image change event to update the image URL in the store.
+   *
+   * @param e - The change event from the input element
+   * @param index - The index of the slide where the image is being changed
+   */
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -152,15 +211,29 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
     }
   }
 
+  /**
+   * Apply the selected image to all slides.
+   *
+   * @param index - The index of the slide to apply the image to
+   */
   const applyImageToAll = (index: number) => {
     console.log(index);
   }
 
+  /**
+   * Handle deleting a slide by its ID.
+   *
+   * @param slideId - The ID of the slide to delete
+   * @param e - The HTMLButtonElement event
+   */
   const handleDeleteSlide = (slideId: string, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     removeItem(slideId);
   }
 
+  /**
+   * Handle confirming the chosen song.
+   */
   const onConfirm = () => {
     if (chosenSong) {
       handleChonsenSong(chosenSong);
@@ -168,6 +241,9 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
     setShowConfirmModal(false);
   }
 
+  /**
+   * Handle canceling the confirmation modal.
+   */
   const onCancel = () => {
     setShowConfirmModal(false);
   }
@@ -279,7 +355,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
           </div>
         </div>
       </div>
-      {showConfirmModal && <ConfirmModal onConfirm={onConfirm} onCancel={onCancel} />}
+      {/* {showConfirmModal && <ConfirmModal onConfirm={onConfirm} onCancel={onCancel} />} */}
     </DefaultLayout>
   );
 });
