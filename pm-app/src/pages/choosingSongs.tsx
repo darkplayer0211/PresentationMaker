@@ -144,11 +144,8 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
           setChosenSlide(undefined);
           const newSong = { ...song, songId: song.id, id: uuidv4() } as SongSlideType;
           addItem(newSong, position);
-          song.setIsChosen(true);
           song.setShowCancelBtn(false);
-
         } else {
-          song.setIsChosen(false);
           song.setShowCancelBtn(false);
         }
       });
@@ -162,18 +159,10 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
    */
   const handleCancleChosen = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    const chosenSlideData = slidesData.find(slide => slide.id === chosenSlide) as SongSlideType;
     const positionSlide = slidesData.findIndex(slide => slide.id === chosenSlide);
     removeItem(chosenSlide || "");
-    resultsongs.forEach((song: SongType) => {
-      if (song.id === chosenSlideData?.songId) {
-        song.setIsChosen(false);
-        song.setShowCancelBtn(false);
-      } else {
-        song.setShowCancelBtn(false);
-      }
-    });
     handleAddOnlyBlankSlide(positionSlide);
+    handleRemoveIconCancelSong();
   };
 
   /**
@@ -210,6 +199,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
         song.setIsChosen(true);
         song.setShowCancelBtn(true);
       } else {
+        song.setIsChosen(false);
         song.setShowCancelBtn(false);
       }
     });
@@ -263,6 +253,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   const handleDeleteSlide = (slideId: string, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     removeItem(slideId);
+    handleRemoveIconCancelSong();
   }
 
   /**
@@ -280,6 +271,22 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
    */
   const onCancel = () => {
     setShowConfirmModal(false);
+  }
+
+  /**
+   * Handle removing the cancel icon from the chosen song.
+   * This function is called when the cancel button is clicked on a song.
+   */
+  const handleRemoveIconCancelSong = () => {
+    const chosenSlideData = slidesData.find(slide => slide.id === chosenSlide) as SongSlideType;
+    resultsongs.forEach((song: SongType) => {
+      if (song.id === chosenSlideData?.songId) {
+        song.setIsChosen(false);
+        song.setShowCancelBtn(false);
+      } else {
+        song.setShowCancelBtn(false);
+      }
+    });
   }
 
   useEffect(() => {
