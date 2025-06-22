@@ -163,6 +163,9 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
     removeItem(chosenSlide || "");
     handleAddOnlyBlankSlide(positionSlide);
     handleRemoveIconCancelSong();
+    if (chosenSlide) {
+      setChosenSlide(undefined);
+    }
   };
 
   /**
@@ -254,6 +257,34 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
     e.stopPropagation();
     removeItem(slideId);
     handleRemoveIconCancelSong();
+    if (chosenSlide) {
+      setChosenSlide(undefined);
+    }
+    // Nếu slide đã chọn là slide bài hát và slide trước hoặc sau là slide bài hát, thì xoá slide bài hát đã chọn
+    //   - Nếu slide đã chọn là bài hát và slide trước là slide ảnh, thì xoá cả hai slides (gồm slide bài hát đã chọn và slide ảnh trước đó)
+    //   - Hoặc nếu slide đã chọn là bài hát và slide sau là slide ảnh, thì xoá cả hai slides (gồm slide bài hát đã chọn và slide ảnh sau đó)
+    const index = slidesData.findIndex(slide => slide.id === slideId);
+    slidesData.forEach((slide: SongType | ImageType, i) => {
+      if (slide.id === slideId && 'slides' in slide) {
+        const prev = slidesData[index - 1];
+        const next = slidesData[index + 1];
+        if (prev && 'slides' in prev) {
+          removeItem(slideId);
+          return;
+        }
+        if (next && 'slides' in next) {
+          removeItem(slideId);
+          return;
+        }
+        if (prev && 'type' in prev) {
+          removeItem(slideId);
+          removeItem(prev.id);
+        } else if (next && 'type' in next) {
+          removeItem(slideId);
+          removeItem(next.id);
+        }
+      }
+    })
   }
 
   /**
@@ -365,9 +396,6 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                             {!item.url && <div className="choosingSongs_edit_preview_slideList_item_noImage">
                               <p>Không có ảnh</p>
                             </div>}
-                            <div className="choosingSongs_edit_preview_slideList_item_delete">
-                              <button onClick={(e) => handleDeleteSlide(item.id, e)}><TrashCan width={16} height={16} /></button>
-                            </div>
                             {chosenSlide === item.id && item.type === 'image' && <div className="choosingSongs_edit_preview_slideList_item_buttons">
                               <button onClick={() => chooseImage(index)}>Chọn ảnh</button>
                               <button onClick={() => applyImageToAll(index)}>Áp dụng tất cả</button>
