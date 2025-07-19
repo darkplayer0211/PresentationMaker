@@ -51,7 +51,10 @@ def get_font_and_size_from_slide_xml(pptx_path, slide_num=1):
             with zip_ref.open(slide_path) as slide_file:
                 tree = ET.parse(slide_file)
                 root = tree.getroot()
-                ns = {'a': 'http://schemas.openxmlformats.org/drawingml/2006/main', 'p': 'http://schemas.openxmlformats.org/presentationml/2006/main'}
+                ns = {
+                    'a': 'http://schemas.openxmlformats.org/drawingml/2006/main',
+                    'p': 'http://schemas.openxmlformats.org/presentationml/2006/main'
+                }
                 
                 fonts_and_sizes = {
                     "title": {"font": None, "size": None, "line_height": None},
@@ -124,6 +127,33 @@ def get_font_and_size_from_slide_xml(pptx_path, slide_num=1):
         print(f"  Debug - Error reading slide{slide_num}.xml: {e}")
         return None
 
+def get_slide_size_from_xml(pptx_path):
+    try:
+        with zipfile.ZipFile(pptx_path, 'r') as zip_ref:
+            # Đọc file slide master (thường là sldMaster1.xml)
+            master_path = 'ppt/slideMasters/slideMaster1.xml'
+            with zip_ref.open(master_path) as master_file:
+                tree = ET.parse(master_file)
+                root = tree.getroot()
+                
+                # Namespace cần thiết
+                ns = {
+                    'a': 'http://schemas.openxmlformats.org/drawingml/2006/main',
+                    'p': 'http://schemas.openxmlformats.org/presentationml/2006/main'
+                }
+                
+                # Tìm kích thước trong thẻ <a:ext>
+                ext = root.find('.//p:cSld/p:spTree/p:sp[1]/p:spPr/a:xfrm/a:ext', ns)
+                if ext is not None:
+                    width = int(ext.get('cx'))
+                    height = int(ext.get('cy'))
+                    return {"width": width, "height": height}
+                
+    except Exception as e:
+        print(f"Error reading slide size: {e}")
+    
+    return {"width": 0, "height": 0}
+
 def get_font_info(paragraph, shape=None, slide=None, prs=None, pptx_path=None):
     # 1. Lấy từ run trong shape (python-pptx)
     for run in paragraph.runs:
@@ -190,6 +220,7 @@ def pptx_folder_to_json(folder_path, output_file):
             file_path = os.path.join(folder_path, file_name)
             try:
                 prs = Presentation(file_path)
+                slide_size = get_slide_size_from_xml(file_path)
             except Exception as e:
                 print(f"Error opening {file_name}: {e}")
                 continue
@@ -243,7 +274,7 @@ def pptx_folder_to_json(folder_path, output_file):
                 if content:
                     if not title_font and theme_fonts["major_font"]:
                         title_font = theme_fonts["major_font"]
-                        title_font_size = title_font_size or 30
+                        title_font_size = title_font_size or 20
                     if not content_font and theme_fonts["minor_font"]:
                         content_font = theme_fonts["minor_font"]
                         content_font_size = content_font_size or 115
@@ -254,7 +285,7 @@ def pptx_folder_to_json(folder_path, output_file):
                         "title": {
                             "text": title or "",
                             "fontName": title_font or "Unknown",
-                            "fontSize": title_font_size or 30
+                            "fontSize": 25
                         },
                         "content": {
                             "text": content or "",
@@ -272,6 +303,10 @@ def pptx_folder_to_json(folder_path, output_file):
             file_data = {
                 "id": str(uuid.uuid4()),
                 "fileName": base_file_name,
+                "slideSize": {
+                    "width": slide_size["width"],
+                    "height": slide_size["height"]  
+                },
                 "slides": slides,
             }
             all_files.append(file_data)
