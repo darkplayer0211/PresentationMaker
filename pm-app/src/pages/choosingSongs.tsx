@@ -7,6 +7,7 @@ import { ImageType } from "../store/imagesStore";
 import { v4 as uuidv4 } from 'uuid';
 import { TrashCan } from "../icons/trashCan";
 import { ConfirmModal } from "../components/ConfirmModal";
+import ExportFilePPTX from "./exportFilePPTX";
 
 const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   const { songs, searchSong } = songsStore;
@@ -411,10 +412,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
               </div>
             </div>
             <div className="choosingSongs_preview_buttons">
-              <button className="choosingSongs_preview_buttons_export">
-                Xuất file
-              </button>
-
+              <ExportFilePPTX resultDataList={slidesData} />
               <button
                 onClick={() => handleBack()}
                 className="choosingSongs_preview_buttons_back"
