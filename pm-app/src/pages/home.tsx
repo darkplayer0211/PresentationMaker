@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import LinkBtn from "../components/LinkBtn/LinkBtn";
 import "../css/pages/home.css";
+// Todo: Chỗ này sẽ bỏ, data sẽ được từ màn hình chọn bài hát
 import jsonData from "../data/output/output.json"; // replace with the actual path to your JSON data
 import PptxGenJS from "pptxgenjs";
 
@@ -20,7 +21,7 @@ const Home: React.FC<HomeProps> = () => {
     const emuToInches = (emu: number) => emu / 914400;
 
     const pptx = new PptxGenJS();
-    
+
     // Đặt layout mặc định 16:9 cho tất cả slide
     pptx.defineLayout({
       name: "LAYOUT_16x9",
@@ -49,7 +50,7 @@ const Home: React.FC<HomeProps> = () => {
         item.slides.forEach((slideData) => {
           const slide = pptx.addSlide();
           slide.background = { color: "FFFFFF" };
-          
+
           // Scale font size từ file JSON theo tỉ lệ
           const scaledTitleFontSize = Math.round(slideData.title.fontSize / scaleRatio);
           const scaledContentFontSize = Math.round(slideData.content.fontSize / scaleRatio);
@@ -103,8 +104,8 @@ const Home: React.FC<HomeProps> = () => {
       <div className="home_greeting">
         <h1>Chào mừng,</h1>
         <p>Bắt đầu tạo tệp trình chiếu</p>
-        <button 
-          onClick={generateSinglePresentation} 
+        <button
+          onClick={generateSinglePresentation}
           disabled={isGenerating}
           className="download-all-btn"
         >
@@ -119,7 +120,7 @@ const Home: React.FC<HomeProps> = () => {
   );
 };
 
-interface HomeProps {}
+interface HomeProps { }
 
 interface Slide {
   id: string;
