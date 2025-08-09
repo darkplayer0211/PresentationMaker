@@ -1,11 +1,12 @@
 import { makeAutoObservable } from "mobx";
 import { SongType } from "./song";
-
+import listSong from "../../database/listSong.json"
 export class Songs {
   songs: SongType[] = [];
 
   constructor() {
     makeAutoObservable(this);
+    this.setSongs(JSON.parse(JSON.stringify(listSong)));
   }
 
   setSongs = (songs: SongType[]) => {

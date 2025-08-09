@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import song, { SongType } from "../songsStore/song";
+import { SongType } from "../songsStore/song";
 import { ImageType } from "../imagesStore";
 import songsStore from "../songsStore";
 
@@ -19,15 +19,23 @@ export interface Slide {
     };
 }
 
-export class SlideType {
-    data: (SongType | ImageType)[] = [];
+export interface SongSlideType extends SongType {
+    songId: string;
+}
+
+export interface ImageSlideType extends ImageType {
+    imageId: string;
+}
+
+export class SlidesStoreType {
+    data: (SongSlideType | ImageSlideType)[] = [];
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    addItem = (item: SongType | ImageType) => {
-        this.data.push(item);
+    addItem = (item: SongSlideType | ImageSlideType, position: number) => {
+        this.data.splice(position, 0, item);
     };
 
     removeItem = (id: string) => {
@@ -38,7 +46,13 @@ export class SlideType {
         return songsStore.songs.find((song) => song.id === id)?.slides;
     };
 
+    updateImageUrl = (id: string, url: string) => {
+        const imageSlide = this.data.find(item => item.id === id);
+        if (imageSlide && 'url' in imageSlide) {
+            imageSlide.url = url;
+        }
+    };
 }
 
-const slidesStore = new SlideType();
+const slidesStore = new SlidesStoreType();
 export default slidesStore;

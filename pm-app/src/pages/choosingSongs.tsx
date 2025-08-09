@@ -2,123 +2,132 @@ import { useEffect, useState } from "react";
 import "../css/pages/choosingSongs.css";
 import DefaultLayout from "../layouts/defaultLayout";
 import { observer } from "mobx-react";
-import { slidesStore, songsStore, SongType } from "../store";
-import listSong from "../database/listSong.json"
-import { Slide } from "../store/slidesStore/slide";
+import { slidesStore, songsStore, SongType, SongSlideType, ImageSlideType } from "../store";
 import { ImageType } from "../store/imagesStore";
 import { v4 as uuidv4 } from 'uuid';
+import { TrashCan } from "../icons/trashCan";
+import { ConfirmModal } from "../components/ConfirmModal";
 
-interface ChoosingSongsProps { } // Define your props interface if needed
+const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
+  const { songs, searchSong } = songsStore;
+  const { data: slidesData, addItem, removeItem } = slidesStore;
+  const [resultsongs, setResultsongs] = useState<SongType[]>(songs);
+  const [chosenSlide, setChosenSlide] = useState<string>();
+  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+  const [chosenSong, setChosenSong] = useState<SongType>();
 
-if ('showOpenFilePicker' in window) {
-  // The File System Access API is supported.
-  console.log("File System Access API is supported.");
-} else {
-  // Fallback for browsers that do not support the API.
-}
-
-async function applyToAll() {
-  
-}
-
-async function openFile() {
-  try {
-    // Open the file picker.
-    const [fileHandle] = await window.showOpenFilePicker({
-      types: [
-        {
-          description: 'Text Files',
-          accept: {
-            'image/plain': ['.png', '.jpg', '.jpeg'],
-          },
+  /**
+   * Initialize a blank slide if there are no slides in the store.
+   */
+  const initBlankSlide = () => {
+    const blankSilde = {
+      songId: "",
+      id: uuidv4(),
+      fileName: "",
+      chosen: false,
+      showCancelBtn: false,
+      slides: [{
+        id: "",
+        slideNum: 0,
+        title: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
         },
-      ],
-      excludeAcceptAllOption: true,
-      multiple: false,
-    });
-
-    // Proceed to read the file.
-    await readFile(fileHandle);
-  } catch (err) {
-    console.error('Error opening file:', err);
-  }
-}
-
-async function readFile(fileHandle: FileSystemFileHandle) {
-  try {
-    console.log('File handle:', fileHandle);
-
-    // Create a file reader to read the file contents.
-    const file = await fileHandle.getFile();
-    const contents = await file.text();
-    console.log('File contents:', contents);
-    
-    const imageUrl = URL.createObjectURL(file);
-    console.log('Image URL:', imageUrl);
-
-    // Optionally, you can create an image element to display the file.
-    const imgElement = document.createElement('img');
-    imgElement.src = imageUrl;
-
-    imgElement.style.maxWidth = '100%';
-    imgElement.style.cursor = 'pointer';
-    imgElement.title = 'Click to re-upload';
-
-    // When image is clicked, re-trigger file input
-    imgElement.onclick = () => openFile();
-    imgElement.alt = 'Selected Image';
-    imgElement.style.width = '100px'; // Set width for the image
-    imgElement.style.height = '100px'; // Set height for the image
-    imgElement.style.objectFit = 'cover'; // Maintain aspect ratio
-
-    const button = document.getElementById('replace-button');
-      if (button && button.parentNode) {
-        button.parentNode.replaceChild(imgElement, button);
-      } else {
-        // Replace existing image
-        const existingImg = document.querySelector('img');
-        if (existingImg && existingImg.parentNode) {
-          existingImg.parentNode.replaceChild(imgElement, existingImg);
+        content: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
         }
-      }
-  } catch (err) {
-    console.error('Error reading file:', err);
-  }
-}
-
-const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
-  const initSongs: Array<SongType> = JSON.parse(JSON.stringify(listSong));
-  const initSlide: Slide = {
-    slideNum: 0,
-    isBlankPage: true,
-    isChosen: false,
-    title: {
-      text: "",
-      fontName: "",
-      fontSize: 0
-    },
-    content: {
-      text: "",
-      fontName: "",
-      fontSize: 0
+      }]
+    } as SongSlideType;
+    if (slidesData.length === 0) {
+      slidesData.push(blankSilde);
     }
-  };
-  const [resultsongs, setResultsongs] = useState<SongType[]>([]);
+  }
+
+  useEffect(() => {
+    initBlankSlide();
+  }, []);
 
   const handleBack = () => {
     window.history.back();
   };
 
-  const { songs, searchSong } = songsStore;
-  const { data: slidesData, getSongSlides, addItem } = slidesStore;
-
+  /**
+   * Add blank slide and image slide.
+   *
+   * @param position - positon of slide 
+   */
   const handleAddBlankSlide = (position: number) => {
-    const newImageSlide: ImageType = {
+    const newSong = new SongType({
       id: uuidv4(),
-      name: "",
-      image: ""
+      fileName: "",
+      chosen: false,
+      showCancelBtn: false,
+      slides: [{
+        id: "",
+        slideNum: 0,
+        title: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
+        },
+        content: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
+        }
+      }]
+    });
+    const songSlide = Object.assign(newSong, { songId: newSong.id });
+    const newImage: ImageSlideType = {
+      id: uuidv4(),
+      type: "image",
+      url: "",
+      imageId: uuidv4(),
     };
-    addItem(newImageSlide);
+
+    const prevSlide = position > 0 ? slidesData[position - 1] : null;
+    if (prevSlide && 'slides' in prevSlide) {
+      // If previous slide is SongType, add image first
+      addItem(newImage, position);
+      addItem(songSlide, position + 1);
+    } else {
+      // If previous slide is ImageType or no previous slide, add song first
+      addItem(songSlide, position);
+      addItem(newImage, position + 1);
+    }
+  }
+
+  /**
+   * Add only blank slide.
+   *
+   * @param position - positon of slide
+   */
+  const handleAddOnlyBlankSlide = (position: number) => {
+    const newSong = new SongType({
+      id: uuidv4(),
+      fileName: "",
+      chosen: false,
+      showCancelBtn: false,
+      slides: [{
+        id: "",
+        slideNum: 0,
+        title: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
+        },
+        content: {
+          text: "",
+          fontName: "",
+          fontSize: 0,
+        }
+      }]
+    });
+    const songSlide = Object.assign(newSong, { songId: newSong.id });
+    addItem(songSlide, position);
   }
 
   /**
@@ -126,15 +135,21 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
    * @param song - The song to unselect
    * @param e - The HTMLButtonElement event
    */
-  const handleChosenSong = (song: SongType) => {
-    const slideChosenList = getSlide().filter((slide: Slide) => slide.isChosen);
-    if (!slideChosenList.length) {
-      return;
+  const handleChonsenSong = (chosenSong: SongType) => {
+    if (chosenSlide && chosenSong) {
+      const position = slidesData.findIndex(slide => slide.id === chosenSlide);
+      resultsongs.forEach((song: SongType) => {
+        if (chosenSong?.id === song.id) {
+          removeItem(chosenSlide);
+          setChosenSlide(undefined);
+          const newSong = { ...song, songId: song.id, id: uuidv4() } as SongSlideType;
+          addItem(newSong, position);
+          song.setShowCancelBtn(false);
+        } else {
+          song.setShowCancelBtn(false);
+        }
+      });
     }
-    song.setIsChosen(true);
-    song.getSlides().forEach((slide: Slide, index) => {
-      addSlide(slide, index);
-    });
   };
 
   /**
@@ -142,8 +157,15 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
    * @param song - The song to unselect
    * @param e - The HTMLButtonElement event
    */
-  const handleCancelChosen = (song: SongType, e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCancleChosen = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    const positionSlide = slidesData.findIndex(slide => slide.id === chosenSlide);
+    removeItem(chosenSlide || "");
+    handleAddOnlyBlankSlide(positionSlide);
+    handleRemoveIconCancelSong();
+    if (chosenSlide) {
+      setChosenSlide(undefined);
+    }
   };
 
   /**
@@ -156,8 +178,151 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
     setResultsongs(result);
   }
 
-  const handleChosenSlide = (slide: Slide) => {
+  /**
+   * Handle clicking on a song to select it.
+   *
+   * @param song - The song to select
+   */
+  const handleSongClick = (song: SongType) => {
+    // setChosenSong(song);
+    // setShowConfirmModal(true);
+    handleChonsenSong(song);
   }
+
+  /**
+   * Handle choosing a slide by its ID.
+   *
+   * @param slideId - The ID of the slide to choose
+   */
+  const handleChosenSlide = (slideId: string) => {
+    const chosenSlideData = slidesData.find(slide => slide.id === slideId) as SongSlideType;
+    setChosenSlide(slideId);
+    resultsongs.forEach((song: SongType) => {
+      if (song.id === chosenSlideData?.songId) {
+        song.setIsChosen(true);
+        song.setShowCancelBtn(true);
+      } else {
+        song.setIsChosen(false);
+        song.setShowCancelBtn(false);
+      }
+    });
+  }
+
+  /**
+   * Choose an image by its index.
+   *
+   * @param index - Index of slide
+   */
+  const chooseImage = (index: number) => {
+    const input = document.getElementById(`image-${index}`) as HTMLInputElement;
+    input.click();
+  }
+
+  /**
+   * Handle image change event to update the image URL in the store.
+   *
+   * @param e - The change event from the input element
+   * @param index - The index of the slide where the image is being changed
+   */
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageUrl = e.target?.result as string;
+        const slideId = slidesData[index].id;
+        slidesStore.updateImageUrl(slideId, imageUrl);
+      }
+      reader.readAsDataURL(file);
+      setChosenSlide(undefined);
+    }
+  }
+
+  /**
+   * Apply the selected image to all slides.
+   *
+   * @param index - The index of the slide to apply the image to
+   */
+  const applyImageToAll = (index: number) => {
+    console.log(index);
+  }
+
+  /**
+   * Handle deleting a slide by its ID.
+   *
+   * @param slideId - The ID of the slide to delete
+   * @param e - The HTMLButtonElement event
+   */
+  const handleDeleteSlide = (slideId: string, e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    removeItem(slideId);
+    handleRemoveIconCancelSong();
+    if (chosenSlide) {
+      setChosenSlide(undefined);
+    }
+    // Nếu slide đã chọn là slide bài hát và slide trước hoặc sau là slide bài hát, thì xoá slide bài hát đã chọn
+    //   - Nếu slide đã chọn là bài hát và slide trước là slide ảnh, thì xoá cả hai slides (gồm slide bài hát đã chọn và slide ảnh trước đó)
+    //   - Hoặc nếu slide đã chọn là bài hát và slide sau là slide ảnh, thì xoá cả hai slides (gồm slide bài hát đã chọn và slide ảnh sau đó)
+    const index = slidesData.findIndex(slide => slide.id === slideId);
+    slidesData.forEach((slide: SongType | ImageType, i) => {
+      if (slide.id === slideId && 'slides' in slide) {
+        const prev = slidesData[index - 1];
+        const next = slidesData[index + 1];
+        if (prev && 'slides' in prev) {
+          removeItem(slideId);
+          return;
+        }
+        if (next && 'slides' in next) {
+          removeItem(slideId);
+          return;
+        }
+        if (prev && 'type' in prev) {
+          removeItem(slideId);
+          removeItem(prev.id);
+        } else if (next && 'type' in next) {
+          removeItem(slideId);
+          removeItem(next.id);
+        }
+      }
+    })
+  }
+
+  /**
+   * Handle confirming the chosen song.
+   */
+  const onConfirm = () => {
+    if (chosenSong) {
+      handleChonsenSong(chosenSong);
+    }
+    setShowConfirmModal(false);
+  }
+
+  /**
+   * Handle canceling the confirmation modal.
+   */
+  const onCancel = () => {
+    setShowConfirmModal(false);
+  }
+
+  /**
+   * Handle removing the cancel icon from the chosen song.
+   * This function is called when the cancel button is clicked on a song.
+   */
+  const handleRemoveIconCancelSong = () => {
+    const chosenSlideData = slidesData.find(slide => slide.id === chosenSlide) as SongSlideType;
+    resultsongs.forEach((song: SongType) => {
+      if (song.id === chosenSlideData?.songId) {
+        song.setIsChosen(false);
+        song.setShowCancelBtn(false);
+      } else {
+        song.setShowCancelBtn(false);
+      }
+    });
+  }
+
+  useEffect(() => {
+    setResultsongs(songs);
+  }, [songs]);
 
   return (
     <DefaultLayout>
@@ -171,19 +336,19 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
               placeholder="Tìm bài hát"
             />
             <ul className="custom-scroll">
-              {resultsongs.map((song: SongType, index: number) => (
-                <div className={`choosingSongs_songList_item ${song.isChosen ? "activeSongType" : ""}`} key={index}
-                  onClick={() => handleChosenSong(song)}>
+              {resultsongs.map((song: SongType) => (
+                <div className={`choosingSongs_songList_item ${song.isChosen ? "activeSongType" : ""}`} key={song.id}
+                  onClick={() => handleSongClick(song)}>
                   <li
-                    key={index}
-                    id={index.toString()}
+                    key={song.id}
+                    id={`song-${song.id.toString()}`}
                   >
                     Tên: {song.fileName}
                   </li>
-                  {song.isChosen && (
+                  {song.showCancelBtn && (
                     <div className="choosingSongs_songList_item_chosen">
                       <button
-                        onClick={(e) => handleCancelChosen(song, e)}>
+                        onClick={(e) => handleCancleChosen(e)}>
                         Bỏ chọn
                       </button>
                     </div>)
@@ -201,32 +366,47 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
                   {slidesData.map((item: SongType | ImageType, index: number) => {
                     if ('slides' in item) {
                       // Handle SongType
-                      return item.slides.map((slide, slideIndex) => (
-                        <li 
-                          className="choosingSongs_edit_preview_slideList_item"
-                          key={`${index}-${slideIndex}`}
-                          onClick={() => handleChosenSlide(slide)}
-                        >
-                          {slide.content.text}
-                        </li>
-                      ));
+                      return (
+                        <>
+                          {item.slides.map((slide, slideIndex) => (
+                            <li
+                              className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
+                              key={`${index}-${slideIndex}`}
+                              onClick={() => handleChosenSlide(item.id)}
+                            >
+                              <div className="choosingSongs_edit_preview_slideList_item_delete">
+                                <button onClick={(e) => handleDeleteSlide(item.id, e)}><TrashCan width={16} height={16} /></button>
+                              </div>
+                              {slide.content.text}
+                            </li>
+                          ))}
+                          <button onClick={() => handleAddBlankSlide(index + 1)}>+</button>
+                        </>
+                      );
                     } else {
                       // Handle ImageType
                       return (
-                        <li 
-                          className="choosingSongs_edit_preview_slideList_item"
-                          key={index}
-                        >
-                          {item.name || 'Image Slide'}
-                        </li>
+                        <>
+                          <li
+                            className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
+                            key={index}
+                            onClick={() => handleChosenSlide(item.id)}
+                          >
+                            {item.url && <img src={item.url} alt="ảnh" />}
+                            {!item.url && <div className="choosingSongs_edit_preview_slideList_item_noImage">
+                              <p>Không có ảnh</p>
+                            </div>}
+                            {chosenSlide === item.id && item.type === 'image' && <div className="choosingSongs_edit_preview_slideList_item_buttons">
+                              <button onClick={() => chooseImage(index)}>Chọn ảnh</button>
+                              <button onClick={() => applyImageToAll(index)}>Áp dụng tất cả</button>
+                              <input id={`image-${index}`} type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageChange(e, index)} />
+                            </div>}
+                          </li>
+                          <button onClick={() => handleAddBlankSlide(index + 1)}>+</button>
+                        </>
                       );
                     }
                   })}
-
-                  <button id='replace-button' onClick={openFile}>Open File</button>
-                  <button id='replace-all-button' onClick={applyToAll}>Apply to all</button>
-                  
-                  <button onClick={() => handleAddBlankSlide(slidesData.length)}>+</button>
                 </ul>
               </div>
             </div>
@@ -245,6 +425,7 @@ const ChoosingSongs: React.FC<ChoosingSongsProps> = observer(() => {
           </div>
         </div>
       </div>
+      {/* {showConfirmModal && <ConfirmModal onConfirm={onConfirm} onCancel={onCancel} />} */}
     </DefaultLayout>
   );
 });

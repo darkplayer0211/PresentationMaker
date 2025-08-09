@@ -1,0 +1,56 @@
+.confirmModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirmModal_content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 300px;
+    max-width: 90%;
+    text-align: center;
+}
+
+.confirmModal_content h1 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.confirmModal_content button {
+    padding: 0.75rem 1.5rem;
+    margin: 0 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.confirmModal_content button:first-of-type {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.confirmModal_content button:first-of-type:hover {
+    background-color: #45a049;
+}
+
+.confirmModal_content button:last-of-type {
+    background-color: #f44336;
+    color: white;
+}
+
+.confirmModal_content button:last-of-type:hover {
+    background-color: #da190b;
+} 
