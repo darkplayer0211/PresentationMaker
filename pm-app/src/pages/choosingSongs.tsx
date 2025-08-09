@@ -414,6 +414,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
               <button className="choosingSongs_preview_buttons_export">
                 Xuất file
               </button>
+
               <button
                 onClick={() => handleBack()}
                 className="choosingSongs_preview_buttons_back"
