@@ -5,6 +5,7 @@ export interface SongDataType {
   fileName: string;
   chosen: boolean;
   showCancelBtn: boolean;
+  slideSize: SlideSize;
   slides: SlideType[];
 }
 
@@ -24,9 +25,18 @@ interface SlideType {
   };
 }
 
+interface SlideSize {
+  width: number;
+  height: number;
+}
+
 export class SongType {
   id = "";
   fileName = "";
+  slideSize: SlideSize = {
+    width: 0,
+    height: 0,
+  };
   chosen = false;
   showCancelBtn = false;
   slides: SlideType[] = [
@@ -54,6 +64,7 @@ export class SongType {
       this.fileName = song.fileName;
       this.chosen = song.chosen;
       this.showCancelBtn = song.showCancelBtn
+      this.slideSize = song.slideSize;
       this.slides = song.slides.map((slide) => ({
         slideNum: slide.slideNum,
         id: slide.id,
