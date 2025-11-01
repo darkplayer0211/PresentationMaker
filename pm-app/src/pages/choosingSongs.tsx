@@ -66,6 +66,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
       fileName: "",
       chosen: false,
       showCancelBtn: false,
+      slideSize: { width: 0, height: 0 },
       slides: [{
         id: "",
         slideNum: 0,
@@ -112,6 +113,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
       fileName: "",
       chosen: false,
       showCancelBtn: false,
+      slideSize: { width: 0, height: 0 },
       slides: [{
         id: "",
         slideNum: 0,
