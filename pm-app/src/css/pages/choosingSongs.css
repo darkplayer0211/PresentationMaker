@@ -52,10 +52,24 @@
     background-color: var(--background);
     width: 100%;
 }
+.choosingSongs_songList_item .song_preview {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
+    color: grey;
+}
 
 .choosingSongs_songList ul li {
     padding: 0 12px !important;
     text-align: left !important;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 12px;
+    margin: 0;
+    border-radius: 8px;
 }
 
 .choosingSongs_songList_item button {
@@ -112,15 +126,6 @@
     display: none;
 }
 
-.choosingSongs_songList ul li {
-    padding: 12px;
-    margin: 0;
-    border-radius: 8px;
-    height: 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
 .choosingSongs_songList ul li:hover {
     background-color: var(--highlight-background);
     cursor: pointer;

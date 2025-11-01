@@ -346,7 +346,8 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                     key={song.id}
                     id={`song-${song.id.toString()}`}
                   >
-                    Tên: {song.fileName}
+                    <span>Tên: {song.fileName}</span>
+                    {song.slides.length > 0 && (<span className="song_preview">{song.slides[0].content.text}</span>)}
                   </li>
                   {song.showCancelBtn && (
                     <div className="choosingSongs_songList_item_chosen">
