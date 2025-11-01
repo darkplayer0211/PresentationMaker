@@ -16,15 +16,18 @@ const ExportFilePPTX: React.FC<ExportFilePPTXProps> = observer(({ resultDataList
     const [isGenerating, setIsGenerating] = useState(false);
 
     const generateSinglePresentation = async () => { // Đảm bảo hàm là async
-        if (!resultDataList || resultDataList.length === 0) {
-            alert("Không có dữ liệu để xuất file!");
-            return;
-        }
-
         setIsGenerating(true);
         const today = new Date().toISOString().split("T")[0];
-        const data = resultDataList;
-
+        const data = resultDataList.filter((item) => {
+            return (
+                ("type" in item && item.type === "image" && item.url) ||
+                ("fileName" in item && item.fileName)
+            );
+        });
+        if (!data.length) {
+            setIsGenerating(false);
+            return;
+        }
         const DEFAULT_SLIDE_WIDTH = 10;
         const DEFAULT_SLIDE_HEIGHT = 5.625;
         const emuToInches = (emu: number) => emu / 914400;
