@@ -388,6 +388,11 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                     <p className="slide_content" style={{ fontFamily: slideReview.content.fontName, fontSize: ptToPx(slideReview.content.fontSize) }}>{slideReview.content.text}</p>
                   </>
                 )}
+                {(slideReview && 'url' in slideReview) && (
+                  <>
+                    {slideReview.url && <img src={slideReview.url} alt="ảnh" style={{ width: '100%', height: '100%' }} />}
+                  </>
+                )}
               </div>
               <div className="choosingSongs_edit_preview_slideList">
                 <ul className="custom-scroll">
