@@ -8,6 +8,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { TrashCan } from "../icons/trashCan";
 import { ConfirmModal } from "../components/ConfirmModal";
 import ExportFilePPTX from "./exportFilePPTX";
+import { SlideType } from "../store/songsStore/song";
+
+const PREVIEW_SLIDE_ID = "preview_slide";
 
 const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   const { songs, searchSong } = songsStore;
@@ -16,6 +19,19 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
   const [chosenSlide, setChosenSlide] = useState<string>();
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [chosenSong, setChosenSong] = useState<SongType>();
+  const [slideReview, setSlideReview] = useState<SlideType | ImageType>();
+  const [divSize, setDivSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const el = document.getElementById(PREVIEW_SLIDE_ID);
+    if (!el) return;
+    setDivSize({ width: el.clientWidth, height: el.clientHeight });
+  }, []);
+
+  const ptToPx = (pt: number) => {
+    // 1 pt = 1.3333 px (according to the 96 DPI standard)
+    return pt / (divSize.width / divSize.height) / 1.3333
+  }
 
   /**
    * Initialize a blank slide if there are no slides in the store.
@@ -197,13 +213,15 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
    *
    * @param slideId - The ID of the slide to choose
    */
-  const handleChosenSlide = (slideId: string) => {
+  const handleChosenSlide = (slideId: string, slide: SlideType | ImageSlideType) => {
     const chosenSlideData = slidesData.find(slide => slide.id === slideId) as SongSlideType;
+    setSlideReview(slide);
     setChosenSlide(slideId);
     resultsongs.forEach((song: SongType) => {
-      if (song.id === chosenSlideData?.songId) {
+      if ("fileName" in chosenSlideData && song.id === chosenSlideData?.songId) {
         song.setIsChosen(true);
         song.setShowCancelBtn(true);
+
       } else {
         song.setIsChosen(false);
         song.setShowCancelBtn(false);
@@ -346,7 +364,8 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                     key={song.id}
                     id={`song-${song.id.toString()}`}
                   >
-                    Tên: {song.fileName}
+                    <span>Tên: {song.fileName}</span>
+                    {song.slides.length > 0 && (<span className="song_preview">{song.slides[0].content.text}</span>)}
                   </li>
                   {song.showCancelBtn && (
                     <div className="choosingSongs_songList_item_chosen">
@@ -362,7 +381,14 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
           </div>
           <div className="choosingSongs_edit">
             <div className="choosingSongs_edit_preview">
-              <div className="choosingSongs_edit_preview_slide"></div>
+              <div id={PREVIEW_SLIDE_ID} className="choosingSongs_edit_preview_slide">
+                {(slideReview && "content" in slideReview && slideReview.content.text) && (
+                  <>
+                    <p className="slide_title" style={{ fontWeight: "bold", fontFamily: slideReview.title.fontName, fontSize: ptToPx(slideReview.title.fontSize) }}>{slideReview.title.text}</p>
+                    <p className="slide_content" style={{ fontFamily: slideReview.content.fontName, fontSize: ptToPx(slideReview.content.fontSize) }}>{slideReview.content.text}</p>
+                  </>
+                )}
+              </div>
               <div className="choosingSongs_edit_preview_slideList">
                 <ul className="custom-scroll">
                   <button onClick={() => handleAddBlankSlide(0)}>+</button>
@@ -375,7 +401,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                             <li
                               className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
                               key={`${index}-${slideIndex}`}
-                              onClick={() => handleChosenSlide(item.id)}
+                              onClick={() => handleChosenSlide(item.id, slide)}
                             >
                               <div className="choosingSongs_edit_preview_slideList_item_delete">
                                 <button onClick={(e) => handleDeleteSlide(item.id, e)}><TrashCan width={16} height={16} /></button>
@@ -393,7 +419,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                           <li
                             className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
                             key={index}
-                            onClick={() => handleChosenSlide(item.id)}
+                            onClick={() => handleChosenSlide(item.id, item as ImageSlideType)}
                           >
                             {item.url && <img src={item.url} alt="ảnh" />}
                             {!item.url && <div className="choosingSongs_edit_preview_slideList_item_noImage">
