@@ -9,7 +9,7 @@ export interface SongDataType {
   slides: SlideType[];
 }
 
-interface SlideType {
+export interface SlideType {
   slideNum: number;
   id: string;
   isChosen?: boolean;

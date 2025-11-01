@@ -184,6 +184,18 @@
     background-color: white;
 }
 
+.choosingSongs_edit_preview_slide .slide_title {
+    text-align: center;
+    margin: 0;
+    margin-top: 10px;
+}
+
+.choosingSongs_edit_preview_slide .slide_content {
+    text-align: justify;
+    margin: 0px;
+    padding: 10px;
+}
+
 .choosingSongs_edit_preview_slideList {
     width: 30%;
     min-height: 20%;
