@@ -4,6 +4,10 @@ import { ImageType } from "../store/imagesStore";
 import { observer } from "mobx-react";
 import { useState } from "react";
 
+// +++ 1. Thêm import cho Tauri
+import { invoke } from "@tauri-apps/api/core";
+import { save } from "@tauri-apps/plugin-dialog";
+
 interface ExportFilePPTXProps {
     resultDataList: (SongType | ImageType)[]; // nhận từ ngoài
 }
@@ -11,7 +15,7 @@ interface ExportFilePPTXProps {
 const ExportFilePPTX: React.FC<ExportFilePPTXProps> = observer(({ resultDataList }) => {
     const [isGenerating, setIsGenerating] = useState(false);
 
-    const generateSinglePresentation = async () => {
+    const generateSinglePresentation = async () => { // Đảm bảo hàm là async
         if (!resultDataList || resultDataList.length === 0) {
             alert("Không có dữ liệu để xuất file!");
             return;
@@ -25,6 +29,7 @@ const ExportFilePPTX: React.FC<ExportFilePPTXProps> = observer(({ resultDataList
         const DEFAULT_SLIDE_HEIGHT = 5.625;
         const emuToInches = (emu: number) => emu / 914400;
 
+        // --- Toàn bộ logic tạo slide của bạn giữ nguyên ---
         const pptx = new PptxGenJS();
 
         pptx.defineLayout({
@@ -39,6 +44,8 @@ const ExportFilePPTX: React.FC<ExportFilePPTXProps> = observer(({ resultDataList
                 slide.background = { data: item.url };
             } else if ("fileName" in item) {
                 item.slides.forEach((slideData) => {
+                    // ... (toàn bộ logic addSlide, addText của bạn ở đây) ...
+                    // ... (giữ nguyên không thay đổi) ...
                     const slide = pptx.addSlide();
                     slide.background = { color: "FFFFFF" };
                     const scaleRatio = item
@@ -82,9 +89,50 @@ const ExportFilePPTX: React.FC<ExportFilePPTXProps> = observer(({ resultDataList
                 });
             }
         }
+        // --- Kết thúc logic tạo slide ---
 
-        pptx.writeFile({ fileName: `File trình chiếu_${today}.pptx` })
-            .then(() => setIsGenerating(false));
+
+        // +++ 2. Bắt đầu logic lưu file "Tauri Way" +++
+        try {
+            // A. Tạo file trong bộ nhớ dưới dạng ArrayBuffer
+            const fileDataBuffer = await pptx.write({ outputType: 'arraybuffer' });
+
+            // B. Hỏi người dùng muốn lưu file ở đâu và tên gì
+            const filePath = await save({
+                title: "Lưu file trình chiếu",
+                defaultPath: `${today}.pptx`, // Gợi ý tên file
+                filters: [{
+                    name: 'PowerPoint Presentation',
+                    extensions: ['pptx']
+                }]
+            });
+
+            // C. Nếu người dùng chọn một đường dẫn (không bấm "Cancel")
+            if (filePath) {
+                // D. Chuyển ArrayBuffer thành mảng byte (Uint8Array)
+                //    Sau đó chuyển thành mảng số thông thường (Array)
+                //    để gửi qua Tauri (Rust sẽ nhận là Vec<u8>)
+                const data = Array.from(new Uint8Array(fileDataBuffer as ArrayBuffer));
+
+                // E. Gọi command "save_presentation" bên Rust
+                await invoke('save_presentation', {
+                    filePath: filePath,
+                    data: data
+                });
+
+                alert('Đã lưu file thành công!');
+            }
+        } catch (err) {
+            console.error(err);
+            alert(`Đã xảy ra lỗi khi lưu file: ${err}`);
+        } finally {
+            // F. Dừng trạng thái loading dù thành công hay thất bại
+            setIsGenerating(false);
+        }
+
+        // --- 3. Xóa dòng code cũ bị lỗi ---
+        // pptx.writeFile({ fileName: `${today}.pptx` })
+        //     .then(() => setIsGenerating(false));
     };
 
     return (
