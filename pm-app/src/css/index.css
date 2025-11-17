@@ -16,6 +16,8 @@ code {
   --primary: #865D36;
   --background: rgba(147, 120, 91, 0.3);
   --highlight-background: #AC8968;
+  --second-background: #dfb187;
   --text: black;
   --highlight-text: #FFFFFF;
+  --second-text: #d6d6d6;
 }

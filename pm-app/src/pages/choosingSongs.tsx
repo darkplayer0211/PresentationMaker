@@ -306,6 +306,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
         }
       }
     })
+    setSlideReview(undefined);
   }
 
   /**
@@ -358,7 +359,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
             />
             <ul className="custom-scroll">
               {resultsongs.map((song: SongType) => (
-                <div className={`choosingSongs_songList_item ${song.isChosen ? "activeSongType" : ""}`} key={song.id}
+                <div className={`choosingSongs_songList_item ${song.isChosen ? "activeSong" : ""}`} key={song.id}
                   onClick={() => handleSongClick(song)}>
                   <li
                     key={song.id}
@@ -404,7 +405,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                         <>
                           {item.slides.map((slide, slideIndex) => (
                             <li
-                              className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
+                              className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSlide" : ""} ${slideReview && slide.id === slideReview.id ? "selectedSlideReview" : ""}`}
                               key={`${index}-${slideIndex}`}
                               onClick={() => handleChosenSlide(item.id, slide)}
                             >
@@ -422,7 +423,7 @@ const ChoosingSongs: React.FC<Record<string, never>> = observer(() => {
                       return (
                         <>
                           <li
-                            className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSongType" : ""}`}
+                            className={`choosingSongs_edit_preview_slideList_item ${chosenSlide === item.id ? "activeSlide" : ""}`}
                             key={index}
                             onClick={() => handleChosenSlide(item.id, item as ImageSlideType)}
                           >

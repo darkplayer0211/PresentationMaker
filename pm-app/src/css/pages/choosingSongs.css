@@ -38,7 +38,16 @@
 .choosingSongs_songType ul li:hover {
     color: var(--highlight-text);
 }
-.activeSongType {
+.activeSong {
+    background-color: var(--highlight-background) !important;
+    color: var(--highlight-text);
+}
+.activeSlide {
+    background-color: var(--second-background) !important;
+    color: var(--highlight-text);
+}
+
+.selectedSlideReview {
     background-color: var(--highlight-background) !important;
     color: var(--highlight-text);
 }
@@ -51,13 +60,6 @@
     cursor: pointer;
     background-color: var(--background);
     width: 100%;
-}
-.choosingSongs_songList_item .song_preview {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 200px;
-    color: grey;
 }
 
 .choosingSongs_songList ul li {
@@ -83,9 +85,21 @@
     margin-bottom: 5px;
 }
 
-.choosingSongs_songList_item:hover {
+.choosingSongs_songList_item:hover .song_preview {
     background-color: var(--highlight-background);
     color: var(--highlight-text);
+}
+.song_preview {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
+    color: grey;
+}
+
+.activeSong .song_preview {
+    background-color: var(--highlight-background) !important;
+    color: var(--second-text);
 }
 
 .choosingSongs_content {
